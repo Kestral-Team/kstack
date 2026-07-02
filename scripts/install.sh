@@ -107,5 +107,9 @@ else
   cp "$REPO_ROOT/.cursor/agents/kstack.md" "$TARGET_CURSOR/agents/kstack.md"
 fi
 
+if [[ -f "$TARGET/.gitignore" ]] && ! grep -q '^\.kstack/$' "$TARGET/.gitignore" 2>/dev/null; then
+  printf '\n# kstack clone directory (optional)\n.kstack/\n' >>"$TARGET/.gitignore"
+fi
+
 echo "Installed kstack into $TARGET/.cursor/"
 echo "Next: fill in context.md files (see examples/context-templates/)."
