@@ -1,0 +1,19 @@
+scripts/install.sh
+  s_04f4d46ada910c::t_db5b8763a274eb 110-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "a9dc9ccd89cdfd7471ba6a25ea601c74cb928e74",
+  "prompts": {},
+  "sessions": {
+    "s_04f4d46ada910c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "81989092-21f9-42d8-aef5-58deed8718ea",
+        "model": "composer-2.5"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
