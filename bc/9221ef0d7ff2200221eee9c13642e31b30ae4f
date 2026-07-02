@@ -1,0 +1,209 @@
+examples/context-templates/code-review-context.md
+  s_04f4d46ada910c::t_f25bea55aaefe4 1-19
+examples/context-templates/deslop-context.md
+  s_04f4d46ada910c::t_9a360b46adae3a 1-10
+README.md
+  s_04f4d46ada910c::t_22a2d7df2f5abd 3-4,6-8,10,13-14,17,20,23-24,27-40,42,44-47,49-63,65-74,76,80-85,87-91,93,95-100,102-131,136-143,146,148
+CHANGELOG.md
+  s_04f4d46ada910c::t_7b46362f62c651 1-32
+examples/context-templates/code-review-checks.md
+  s_04f4d46ada910c::t_b0733b82c46f86 1-16
+examples/context-templates/write-plan-context.md
+  s_04f4d46ada910c::t_91c461254a241d 1-23
+examples/context-templates/implement-plan-context.md
+  s_04f4d46ada910c::t_1cf3470b27e754 1-22
+CONTRIBUTING.md
+  s_04f4d46ada910c::t_11318f9c916d62 1-44
+examples/context-templates/README.md
+  s_04f4d46ada910c::t_482be724e62d5c 1-26
+scripts/init-context.sh
+  s_04f4d46ada910c::t_8c681d4b0e3c0a 1-46
+.github/workflows/lint.yml
+  s_04f4d46ada910c::t_d3ef34f2931b20 1-52
+scripts/install.sh
+  s_04f4d46ada910c::t_b663196884a0fd 1-111
+.cursor/agents/kstack.md
+  s_04f4d46ada910c::t_3c73cb5f13efcd 3,9-24,28-56,59-97
+.cursor/skills/implementation/acceptance-check/SKILL.md
+  s_04f4d46ada910c::t_3c9d6d037f7808 1-59
+.cursor/skills/implementation/acceptance-check/context.md
+  s_04f4d46ada910c::t_36db018f1a3139 1-4
+.cursor/skills/implementation/babysit-pr/SKILL.md
+  s_04f4d46ada910c::t_8687a814fde798 1-176
+.cursor/skills/implementation/babysit-pr/context.md
+  s_04f4d46ada910c::t_efb6b0a8bc3fa3 1-4
+.cursor/skills/implementation/graphql-patterns/SKILL.md
+  s_04f4d46ada910c::t_52af9f14c6cdf0 1-24
+.cursor/skills/implementation/graphql-patterns/cache-and-pagination.md
+  s_04f4d46ada910c::t_0ca54efc793219 1-48
+.cursor/skills/implementation/graphql-patterns/context.md
+  s_04f4d46ada910c::t_dc3ba1cb382fba 1-4
+.cursor/skills/implementation/graphql-patterns/error-handling.md
+  s_04f4d46ada910c::t_3bdae872f948ac 1-96
+.cursor/skills/implementation/graphql-patterns/resolver-patterns.md
+  s_04f4d46ada910c::t_e4b90e4179e723 1-43
+.cursor/skills/implementation/implement-plan/SKILL.md
+  s_04f4d46ada910c::t_7a50c347a25bb3 22-27,34-35,37,50-54,57-64
+.cursor/skills/implementation/implement-plan/context.md
+  s_04f4d46ada910c::t_e6240ab860cbe7 1-4
+.cursor/skills/implementation/manual-test-plan/SKILL.md
+  s_04f4d46ada910c::t_f484b5aa07fd7e 5-6,22,24-25,27,29,31-39,42,44-59
+.cursor/skills/implementation/manual-test-plan/context.md
+  s_04f4d46ada910c::t_916cd971058b35 1-4
+.cursor/skills/implementation/run-e2e-plan/SKILL.md
+  s_04f4d46ada910c::t_c7885626dde137 1-144
+.cursor/skills/implementation/run-e2e-plan/context.md
+  s_04f4d46ada910c::t_d027fa6d897c99 1-4
+.cursor/skills/implementation/task-pickup/SKILL.md
+  s_04f4d46ada910c::t_079776b573adf8 1-72
+.cursor/skills/implementation/task-pickup/context.md
+  s_04f4d46ada910c::t_18fc0e5efec5ef 1-4
+.cursor/skills/implementation/testing-patterns/SKILL.md
+  s_04f4d46ada910c::t_a2851fd54cb1f4 1-168
+.cursor/skills/implementation/testing-patterns/context.md
+  s_04f4d46ada910c::t_f5f349359af96d 1-4
+.cursor/skills/implementation/write-migration/SKILL.md
+  s_04f4d46ada910c::t_67ca62ea6e70a1 1-45
+.cursor/skills/implementation/write-migration/context.md
+  s_04f4d46ada910c::t_aa7b093b7f434d 1-4
+.cursor/skills/pipelines/debug-pipeline/SKILL.md
+  s_04f4d46ada910c::t_0c0f034a0b7dbe 1-90
+.cursor/skills/pipelines/debug-pipeline/context.md
+  s_04f4d46ada910c::t_c811c317d6f1cb 1-4
+.cursor/skills/pipelines/implementation-pipeline/SKILL.md
+  s_04f4d46ada910c::t_79f7682eba286c 4-6,12-13,15-28,32-43,49-63,67,73,78-79,81-87
+.cursor/skills/pipelines/implementation-pipeline/context.md
+  s_04f4d46ada910c::t_cdcce2e42f2a22 1-4
+.cursor/skills/pipelines/planning-pipeline/SKILL.md
+  s_04f4d46ada910c::t_a247878f374370 1-74
+.cursor/skills/pipelines/planning-pipeline/context.md
+  s_04f4d46ada910c::t_974ac303e0eb38 1-4
+.cursor/skills/pipelines/review-pipeline/SKILL.md
+  s_04f4d46ada910c::t_870f82f1cadd07 4-6,12,14,21-22,27-29,33-35,39-41,43,45-59,63,67,73-74,76-82
+.cursor/skills/pipelines/review-pipeline/context.md
+  s_04f4d46ada910c::t_6af81e428fa85f 1-4
+.cursor/skills/pipelines/review-plan-pipeline/SKILL.md
+  s_04f4d46ada910c::t_622d521b81ffcb 2,4-6,10,12-13,18,20,26,28-30,32,34-35,38-43,46,51-52,56,58-64
+.cursor/skills/pipelines/review-plan-pipeline/context.md
+  s_04f4d46ada910c::t_9c64bd3ae0578e 1-4
+.cursor/skills/planning/plan-review/SKILL.md
+  s_04f4d46ada910c::t_e7c5919d5f62aa 1-147
+.cursor/skills/planning/plan-review/context.md
+  s_04f4d46ada910c::t_97e90e4897af3b 1-4
+.cursor/skills/planning/plan-review/review-process.md
+  s_04f4d46ada910c::t_329592c0721142 1-446
+.cursor/skills/planning/write-plan/SKILL.md
+  s_04f4d46ada910c::t_22870dc11568d2 4-5,10,12-36,38-49,55-57,60-68,70-98,101-113
+.cursor/skills/planning/write-plan/context.md
+  s_04f4d46ada910c::t_00a9112e0b7ee4 1-4
+.cursor/skills/prototyping/decision-capture/SKILL.md
+  s_04f4d46ada910c::t_1ab42950002f5f 1-69
+.cursor/skills/prototyping/decision-capture/context.md
+  s_04f4d46ada910c::t_1b148f80392f04 1-4
+.cursor/skills/prototyping/handoff-to-implementation/SKILL.md
+  s_04f4d46ada910c::t_276ebf3e2fc1eb 1-62
+.cursor/skills/prototyping/handoff-to-implementation/context.md
+  s_04f4d46ada910c::t_10040c7620c547 1-4
+.cursor/skills/prototyping/single-page-mockup/SKILL.md
+  s_04f4d46ada910c::t_d357b2b8189182 1-132
+.cursor/skills/prototyping/single-page-mockup/context.md
+  s_04f4d46ada910c::t_31abf1fcbb2577 1-4
+.cursor/skills/retroactive/debug-prod/SKILL.md
+  s_04f4d46ada910c::t_30ad5ef9ba5a31 1-45
+.cursor/skills/retroactive/debug-prod/context.md
+  s_04f4d46ada910c::t_86435b61f658ba 1-4
+.cursor/skills/retroactive/debug-prod/gcloud-reference.md
+  s_04f4d46ada910c::t_a80c4f73280d04 1-58
+.cursor/skills/retroactive/debug-prod/sentry-tips.md
+  s_04f4d46ada910c::t_d83537c2c58759 1-17
+.cursor/skills/retroactive/debugging/SKILL.md
+  s_04f4d46ada910c::t_0f01201dc2883d 1-61
+.cursor/skills/retroactive/debugging/context.md
+  s_04f4d46ada910c::t_a6e07d88c37840 1-4
+.cursor/skills/retroactive/fix-issues/SKILL.md
+  s_04f4d46ada910c::t_7a03a35ff36468 29-30,33-39
+.cursor/skills/retroactive/fix-issues/context.md
+  s_04f4d46ada910c::t_a03d5c8aa8b1ab 1-4
+.cursor/skills/retroactive/pattern-check/SKILL.md
+  s_04f4d46ada910c::t_a06a6fea24f960 1-76
+.cursor/skills/retroactive/pattern-check/context.md
+  s_04f4d46ada910c::t_416a3ced85d4cd 1-4
+.cursor/skills/review/code-review/SKILL.md
+  s_04f4d46ada910c::t_70d7e1b0e88f2b 13,23-28
+.cursor/skills/review/code-review/checks.md
+  s_04f4d46ada910c::t_8ddfa24648a954 3,6-61,65-68,70-75,77-78,82,84-85,87-89,91-168,170-173,177,179-184,186,192-254,256-295,299-327
+.cursor/skills/review/code-review/context.checks.md
+  s_04f4d46ada910c::t_ef3a5d6a8c442b 1-4
+.cursor/skills/review/code-review/context.md
+  s_04f4d46ada910c::t_74f62e452614b1 1-4
+.cursor/skills/review/code-review/review-process.md
+  s_04f4d46ada910c::t_44d9947910b7fd 35,49-50,73-87,91,165-167,192-193,195-204
+.cursor/skills/review/code-simplify/SKILL.md
+  s_04f4d46ada910c::t_19fe543e064639 29-31,37-39,45-46,50-55,78-84
+.cursor/skills/review/code-simplify/context.md
+  s_04f4d46ada910c::t_db593ae7f40508 1-4
+.cursor/skills/review/code-simplify/patterns.md
+  s_04f4d46ada910c::t_5df79321162e11 7-8,23-25,29,31,35,41-54
+.cursor/skills/review/context-evolve/SKILL.md
+  s_04f4d46ada910c::t_0781fce8ffcf3b 1-107
+.cursor/skills/review/context-evolve/context.md
+  s_04f4d46ada910c::t_b0ac8d414f6114 1-4
+.cursor/skills/review/deslop/SKILL.md
+  s_04f4d46ada910c::t_4237ad7651da20 56,61-67
+.cursor/skills/review/deslop/context.md
+  s_04f4d46ada910c::t_78d051dc3df6a5 1-4
+.cursor/skills/review/manual-review/SKILL.md
+  s_04f4d46ada910c::t_7842ff5f2123f8 4-7,12-13,15-23
+.cursor/skills/review/manual-review/context.md
+  s_04f4d46ada910c::t_441c2c20bb6b3e 1-4
+.cursor/skills/review/manual-review/review-process.md
+  s_04f4d46ada910c::t_4ddfbc05f8376a 31,103,124,131,137-138,142-143,149-209,219,228-230,239,266-267
+.cursor/skills/review/product-review/SKILL.md
+  s_04f4d46ada910c::t_35797c6e49f1f3 1-21
+.cursor/skills/review/product-review/context.md
+  s_04f4d46ada910c::t_a5b2748b393b3b 1-4
+.cursor/skills/review/product-review/review-process.md
+  s_04f4d46ada910c::t_b33ac65c92dd67 1-260
+.cursor/skills/review/refactor-prompt/SKILL.md
+  s_04f4d46ada910c::t_4cd33ddb086a26 1-184
+.cursor/skills/review/refactor-prompt/analysis-criteria.md
+  s_04f4d46ada910c::t_095dfaaad7e78c 1-110
+.cursor/skills/review/refactor-prompt/context.md
+  s_04f4d46ada910c::t_bdb28f862831ed 1-4
+.cursor/skills/review/rule-evolution/SKILL.md
+  s_04f4d46ada910c::t_7e6d00ab85a67e 1-71
+.cursor/skills/review/rule-evolution/context.md
+  s_04f4d46ada910c::t_e1a4a4420201b0 1-4
+.cursor/skills/shared/cleanup-plans/SKILL.md
+  s_04f4d46ada910c::t_9c45604cab4c65 1-120
+.cursor/skills/shared/cleanup-plans/context.md
+  s_04f4d46ada910c::t_ee6b4845348376 1-4
+.cursor/skills/shared/documentation-update/SKILL.md
+  s_04f4d46ada910c::t_238c311b22a599 4-5,10-11,13-24,26,28,30-35,39,41-54,58,60-61,63-72,78-84,90-100
+.cursor/skills/shared/documentation-update/context.md
+  s_04f4d46ada910c::t_fe02ac41f930ee 1-4
+.cursor/skills/shared/evals/SKILL.md
+  s_04f4d46ada910c::t_8d64c4ea820e9b 1-181
+.cursor/skills/shared/evals/context.md
+  s_04f4d46ada910c::t_5d6fe042e7d48e 1-4
+.cursor/skills/shared/kestral-sync/SKILL.md
+  s_04f4d46ada910c::t_6e9164f73b8d17 1-32
+.cursor/skills/shared/kestral-sync/context.md
+  s_04f4d46ada910c::t_3dc4a5fb1814b6 1-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "bc9221ef0d7ff2200221eee9c13642e31b30ae4f",
+  "prompts": {},
+  "sessions": {
+    "s_04f4d46ada910c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "81989092-21f9-42d8-aef5-58deed8718ea",
+        "model": "composer-2.5"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
