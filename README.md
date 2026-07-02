@@ -1,98 +1,151 @@
 # kstack
 
-Plan, Implement, Review — a unified AI development pipeline for [Cursor](https://cursor.com).
+Plan, implement, review, and debug — a unified AI development pipeline for
+[Cursor](https://cursor.com), Claude Code, and other agent hosts.
 
-kstack gives your Cursor agent structured workflows for planning features, implementing plans, and reviewing code to production quality. It ships as a set of Cursor skills and a router agent that delegates to the right pipeline based on your intent.
+kstack ships structured skills and a router agent (`kstack`) that delegates to the right pipeline based on your intent.
+Skills include **Kestral MCP integration** to encourage using [Kestral](https://kestral.ai) as your task tracker — but
+work without Kestral when MCP is not configured.
 
-## Installation
-
-Copy the `.cursor/` directory into your project root:
-
-```bash
-cp -r .cursor/ /path/to/your/project/.cursor/
-```
-
-Or clone this repo as a sibling and symlink:
+## Quick install
 
 ```bash
-git clone https://github.com/Kestral-Team/kstack.git ../kstack
-ln -s ../kstack/.cursor/agents/kstack.md .cursor/agents/kstack.md
-ln -s ../kstack/.cursor/skills/* .cursor/skills/
+git clone https://github.com/Kestral-Team/kstack.git
+./kstack/scripts/install.sh /path/to/your/project
 ```
+
+Or copy manually:
+
+```bash
+cp -r kstack/.cursor/ /path/to/your/project/.cursor/
+```
+
+Then customize `context.md` files (see [Context overlay](#context-overlay) below).
 
 ## Usage
 
-Invoke the kstack subagent in Cursor, or use individual skills directly.
+Invoke the **kstack** subagent, or load individual skills directly.
 
-### Pipelines
+| Intent | Pipeline |
+| ------ | -------- |
+| Plan a feature | `planning-pipeline` |
+| Spike / de-risk | `planning-pipeline` (spike mode) |
+| Implement a plan | `implementation-pipeline` |
+| Pick up a task | `implementation-pipeline` (pickup) |
+| Ship / merge-ready | `implementation-pipeline` (ship) |
+| Review / polish code | `review-pipeline` |
+| Review a plan | `review-plan-pipeline` |
+| Debug prod/local | `debug-pipeline` |
 
-kstack routes your request to one of three pipelines:
+## Skill inventory
 
-| Intent | Pipeline | What it does |
-| ------ | -------- | ------------ |
-| "Plan a feature" | **Planning** | write-plan → validate → review → product review |
-| "Implement the plan" | **Implementation** | implement-plan → full review pipeline |
-| "Review this PR" | **Review** | code-review → fix-issues → simplify → deslop → docs |
-
-### Individual Skills
-
-Each skill can be used standalone:
+### Planning
 
 | Skill | Description |
 | ----- | ----------- |
-| `code-review` | One-pass AI code review (tech-lead style) |
-| `manual-review` | Interactive section-by-section PR walkthrough |
-| `code-simplify` | Refactor for readability while preserving behavior |
-| `deslop` | Strip AI-generated slop (redundant comments, unnecessary casts) |
-| `fix-issues` | Validate and fix reported issues with minimal changes |
-| `implement-plan` | Execute plans in sequential phases with review checkpoints |
-| `write-plan` | Author structured implementation plan documents |
-| `manual-test-plan` | Generate focused manual test plans from branch diffs |
-| `documentation-update` | Update docs to match code changes |
+| `write-plan` | Author structured implementation plans |
+| `plan-review` | Interactive plan validation |
 
-## Customization
+### Implementation
 
-Four files are designed to be customized for your project:
+| Skill | Description |
+| ----- | ----------- |
+| `implement-plan` | Phased plan execution with checkpoints |
+| `task-pickup` | Claim task and create branch |
+| `acceptance-check` | Validate diff against acceptance criteria |
+| `babysit-pr` | Triage comments, fix CI, resolve conflicts |
+| `manual-test-plan` | Generate QA checklist from diff |
+| `run-e2e-plan` | Run Playwright tests from plan sections |
+| `testing-patterns` | Vitest mocking reference |
+| `graphql-patterns` | Resolver, error, cache patterns |
+| `write-migration` | Database migration scaffold |
 
-| File | Purpose |
-| ---- | ------- |
-| `code-review/checks.md` | Project-specific architectural and runtime review checks |
-| `code-simplify/patterns.md` | Simplification patterns for your frameworks and conventions |
-| `documentation-update/SKILL.md` | Your doc types, locations, naming conventions, and update workflow |
-| `write-plan/SKILL.md` | Your plan directory structure, tooling gates, and plan template |
+### Review
 
-These ship with generic examples and `<!-- Add your project-specific ... -->` markers. Fill them in to teach the agent your project's conventions.
+| Skill | Description |
+| ----- | ----------- |
+| `code-review` | One-pass tech-lead review |
+| `manual-review` | Interactive section-by-section review |
+| `product-review` | Product completeness review |
+| `code-simplify` | Readability simplification |
+| `deslop` | Strip AI-generated slop |
+| `refactor-prompt` | Compress agent prompts |
+| `rule-evolution` | Turn findings into rules |
+| `context-evolve` | Grow project context files |
+
+### Retroactive
+
+| Skill | Description |
+| ----- | ----------- |
+| `fix-issues` | Triage and fix reported issues |
+| `debugging` | Common bug patterns |
+| `debug-prod` | GCP/Sentry production debugging |
+| `pattern-check` | Cross-reference past incidents |
+
+### Prototyping
+
+| Skill | Description |
+| ----- | ----------- |
+| `single-page-mockup` | Shareable HTML mockups |
+| `decision-capture` | Record spike decisions |
+| `handoff-to-implementation` | Create follow-up tasks |
+
+### Shared
+
+| Skill | Description |
+| ----- | ----------- |
+| `documentation-update` | Sync docs with code |
+| `cleanup-plans` | Archive completed plans |
+| `evals` | Agent eval patterns |
+| `kestral-sync` | Kestral MCP task sync |
+
+## Context overlay
+
+Every skill ships with an empty `context.md` stub:
+
+```markdown
+# Project Context
+
+<!-- Add project-specific constraints for this skill. -->
+```
+
+Skills load generic workflow from `SKILL.md`, then read `context.md` for your project:
+
+- Plan directory paths
+- Lint/typecheck commands
+- Task tracker integration (Kestral MCP)
+- Codebase-specific review checks (`context.checks.md` for code-review)
+
+**Starter templates:** `examples/context-templates/`
+
+```bash
+./scripts/init-context.sh   # recreate empty stubs (skips filled files)
+```
+
+## Per-host setup
+
+| Host | Install path |
+| ---- | ------------ |
+| Cursor | `.cursor/skills/` + `.cursor/agents/kstack.md` |
+| Claude Code | Symlink `.claude/skills/` → `.cursor/skills/` (optional) |
+| Codex / Copilot | Copy skills to your host's skills directory |
 
 ## Architecture
 
 ```
-User request
-    │
-    ▼
-┌─────────┐
-│ kstack  │  (router — .cursor/agents/kstack.md)
-│  agent  │
-└────┬────┘
-     │ routes to one of:
-     ├──────────────────────────────────────────┐
-     │                                          │
-     ▼                                          ▼
-┌──────────────┐  ┌────────────────────┐  ┌──────────────┐
-│   Planning   │  │  Implementation    │  │    Review     │
-│   Pipeline   │  │    Pipeline        │  │   Pipeline    │
-├──────────────┤  ├────────────────────┤  ├──────────────┤
-│ 1. write-plan│  │ 1. implement-plan  │  │ 1. code-review│
-│ 2. validate  │  │ 2. review pipeline │  │ 2. fix-issues │
-│ 3. review    │  │    (steps 1-5)     │  │ 3. simplify   │
-│ 4. product   │  │                    │  │ 4. deslop     │
-│    review    │  │                    │  │ 5. docs update│
-└──────────────┘  └────────────────────┘  └──────────────┘
+User request → kstack agent → pipeline skill → step skills → context.md overlay
 ```
 
-## Requirements
+Pipelines (`pipelines/*-pipeline/SKILL.md`) orchestrate step skills. Each step skill ends with:
 
-- [Cursor](https://cursor.com) IDE with agent mode enabled
-- A project with version control (git)
+```markdown
+## Project Context
+Read [`context.md`](./context.md) and apply it...
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 

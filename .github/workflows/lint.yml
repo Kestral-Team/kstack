@@ -1,0 +1,52 @@
+name: Lint skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check SKILL.md frontmatter
+        run: |
+          set -e
+          missing=0
+          while IFS= read -r skill; do
+            if ! grep -q '^name:' "$skill"; then
+              echo "Missing name in $skill"
+              missing=1
+            fi
+            if ! grep -q '^description:' "$skill"; then
+              echo "Missing description in $skill"
+              missing=1
+            fi
+          done < <(find .cursor/skills -name SKILL.md)
+          exit $missing
+
+      - name: Check Project Context footer
+        run: |
+          set -e
+          missing=0
+          while IFS= read -r skill; do
+            if ! grep -q '## Project Context' "$skill"; then
+              echo "Missing Project Context footer in $skill"
+              missing=1
+            fi
+            if ! grep -q 'context.md' "$skill"; then
+              echo "Missing context.md link in $skill"
+              missing=1
+            fi
+          done < <(find .cursor/skills -name SKILL.md)
+          exit $missing
+
+      - name: Check for internal codebase leaks
+        run: |
+          if grep -rE "(server/src/|client/src/|@/|cubic\.yaml)" .cursor/skills/; then
+            echo "ERROR: internal codebase references found"
+            exit 1
+          fi
+          echo "No internal codebase leaks"
