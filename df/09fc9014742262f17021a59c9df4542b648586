@@ -1,0 +1,19 @@
+README.md
+  s_fbe3fa0c65ee7e::t_d486c87c812dba 29-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.9",
+  "base_commit_sha": "df09fc9014742262f17021a59c9df4542b648586",
+  "prompts": {},
+  "sessions": {
+    "s_fbe3fa0c65ee7e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "16e406e8-5c4e-46b6-8583-0198093645e3",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
