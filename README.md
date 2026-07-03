@@ -26,16 +26,16 @@ Then customize `context.md` files (see [Context overlay](#context-overlay) below
 
 Invoke the **kstack** subagent, or load individual skills directly.
 
-| Intent | Pipeline |
-| ------ | -------- |
-| Plan a feature | `planning-pipeline` |
-| Spike / de-risk | `planning-pipeline` (spike mode) |
-| Implement a plan | `implementation-pipeline` |
-| Pick up a task | `implementation-pipeline` (pickup) |
-| Ship / merge-ready | `implementation-pipeline` (ship) |
-| Review / polish code | `review-pipeline` |
-| Review a plan | `review-plan-pipeline` |
-| Debug prod/local | `debug-pipeline` |
+| Intent | Invocation |
+| ------ | ---------- |
+| Plan a feature | `/kstack plan X` → scopes, writes plan, reviews it |
+| Spike / de-risk | `/kstack spike X` → timeboxed investigation, ends with decision |
+| Implement a plan | `/kstack implement the plan` → phased build with review |
+| Pick up a task | `/kstack I'm working on KES-42` → claims task, creates branch, builds |
+| Ship / merge-ready | `/kstack ship it` → QA checklist, babysit PR, acceptance check |
+| Review / polish code | `/kstack review this branch` → review, fix, simplify, deslop, docs |
+| Review a plan | `/kstack review the plan` → validates feasibility + product completeness |
+| Debug prod/local | `/kstack X is broken` → investigate, fix, capture retroactively |
 
 ## Skill inventory
 
