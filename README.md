@@ -136,7 +136,7 @@ Skills load generic workflow from `SKILL.md`, then read `context.md` for your pr
 User request → kstack agent → pipeline skill → step skills → context.md overlay
 ```
 
-Pipelines (`pipelines/*-pipeline/SKILL.md`) orchestrate step skills. Each step skill ends with:
+Pipeline skills (`*-pipeline/SKILL.md`) orchestrate step skills. Each step skill ends with:
 
 ```markdown
 ## Project Context
