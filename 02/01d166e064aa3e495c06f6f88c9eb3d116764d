@@ -1,0 +1,78 @@
+.cursor/skills/evals/SKILL.md
+  s_d13cb13c812d5d::t_6a2f1aa9b828e9 1-180
+CHANGELOG.md
+  s_d13cb13c812d5d::t_7c7322359247c0 3-15
+.cursor/skills/product-review/review-process.md
+  s_d13cb13c812d5d::t_6a2f1aa9b828e9 1-260
+.cursor/agents/kstack.md
+  s_d13cb13c812d5d::t_6c69fd476f408a 28-37,49-54,56
+CONTRIBUTING.md
+  s_d13cb13c812d5d::t_7c7322359247c0 5,39
+examples/context-templates/README.md
+  s_d13cb13c812d5d::t_6c69fd476f408a 18-24
+  s_d13cb13c812d5d::t_7c7322359247c0 11-14
+README.md
+  s_d13cb13c812d5d::t_7c7322359247c0 139
+.github/workflows/lint.yml
+  s_d13cb13c812d5d::t_7c7322359247c0 18-19,21-27,31-33,39-45
+scripts/init-context.sh
+  s_d13cb13c812d5d::t_7c7322359247c0 32,43-46
+.cursor/skills/babysit-pr/SKILL.md
+  s_d13cb13c812d5d::t_7034851ca8a8cc 77
+.cursor/skills/code-review/checks.md
+  s_d13cb13c812d5d::t_180d5381fc08a2 222-238
+.cursor/skills/code-simplify/patterns.md
+  s_d13cb13c812d5d::t_6c9a2567a3cc0c 25-27,31-32,44-47
+.cursor/skills/context-evolve/SKILL.md
+  s_d13cb13c812d5d::t_61ace9c8a26b2b 43-47
+.cursor/skills/debug-pipeline/SKILL.md
+  s_d13cb13c812d5d::t_a38dfb4f2da6eb 27,29,37,44-45,51-52
+.cursor/skills/debug-prod/gcloud-reference.md
+  s_d13cb13c812d5d::t_2230f09b0ef357 32,41-42,44-45,49-52,54-55,59-66
+.cursor/skills/debug-prod/sentry-tips.md
+  s_d13cb13c812d5d::t_44abb5ad8b55e5 5-9,20-21
+.cursor/skills/documentation-update/SKILL.md
+  s_d13cb13c812d5d::t_a4431abb1474a2 61
+.cursor/skills/graphql-patterns/cache-and-pagination.md
+  s_d13cb13c812d5d::t_7582c86eaa395a 22-25
+.cursor/skills/graphql-patterns/error-handling.md
+  s_d13cb13c812d5d::t_047798302f2bb0 4-5,36-37
+.cursor/skills/handoff-to-implementation/SKILL.md
+  s_d13cb13c812d5d::t_4656d9e0b0846b 48
+.cursor/skills/implementation-pipeline/SKILL.md
+  s_d13cb13c812d5d::t_b6bd170fd3e9ff 27,36,41,49,54-55,57,59
+.cursor/skills/pattern-check/SKILL.md
+  s_d13cb13c812d5d::t_47a4bc5af5c2bd 45
+.cursor/skills/plan-review/SKILL.md
+  s_d13cb13c812d5d::t_b54ec9a6f1794c 15
+.cursor/skills/plan-review/review-process.md
+  s_d13cb13c812d5d::t_46d507007abb3f 212
+.cursor/skills/planning-pipeline/SKILL.md
+  s_d13cb13c812d5d::t_e051396e5bba7a 22,29,49-50
+.cursor/skills/review-pipeline/SKILL.md
+  s_d13cb13c812d5d::t_3d737e5e9dad7e 21,27,33,39,45,51
+.cursor/skills/review-plan-pipeline/SKILL.md
+  s_d13cb13c812d5d::t_04be3dab1cd31f 20,28,34
+.cursor/skills/rule-evolution/SKILL.md
+  s_d13cb13c812d5d::t_2148df56e58b09 18
+.cursor/skills/write-migration/SKILL.md
+  s_d13cb13c812d5d::t_5dc99caf72e552 34-47
+.cursor/skills/write-plan/SKILL.md
+  s_d13cb13c812d5d::t_e0e745ff8b63bf 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "0201d166e064aa3e495c06f6f88c9eb3d116764d",
+  "prompts": {},
+  "sessions": {
+    "s_d13cb13c812d5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f5d2f-f719-7a72-9623-da0b788e5cc5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
