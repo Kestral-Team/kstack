@@ -27,14 +27,14 @@ that pipeline's SKILL.md and follow it end-to-end. Do not mix pipelines in a sin
 
 | User intent                                         | Pipeline skill to read                              | Mode/phase hint             |
 | --------------------------------------------------- | --------------------------------------------------- | --------------------------- |
-| Plan a feature, write a spec, design something      | `.cursor/skills/planning-pipeline/SKILL.md`         | full mode                   |
-| Spike X, de-risk Y, timeboxed investigation         | `.cursor/skills/planning-pipeline/SKILL.md`         | spike mode                  |
-| Implement a plan, build a feature from a plan       | `.cursor/skills/implementation-pipeline/SKILL.md`   | build phase                 |
-| "I'm working on KES-42", pick up a task (no branch) | `.cursor/skills/implementation-pipeline/SKILL.md`   | pickup → build              |
-| Ship it, get it merged, take to done                | `.cursor/skills/implementation-pipeline/SKILL.md`   | ship phase                  |
-| Review, polish, deslop, simplify (pre-review pass)  | `.cursor/skills/review-pipeline/SKILL.md`           | —                           |
-| Review a plan, validate a plan, critique a spec     | `.cursor/skills/review-plan-pipeline/SKILL.md`      | —                           |
-| Debug, fix a bug, "X is broken", production error   | `.cursor/skills/debug-pipeline/SKILL.md`            | prod or local (auto-detect) |
+| Plan a feature, write a spec, design something      | `.agents/skills/planning-pipeline/SKILL.md`         | full mode                   |
+| Spike X, de-risk Y, timeboxed investigation         | `.agents/skills/planning-pipeline/SKILL.md`         | spike mode                  |
+| Implement a plan, build a feature from a plan       | `.agents/skills/implementation-pipeline/SKILL.md`   | build phase                 |
+| "I'm working on KES-42", pick up a task (no branch) | `.agents/skills/implementation-pipeline/SKILL.md`   | pickup → build              |
+| Ship it, get it merged, take to done                | `.agents/skills/implementation-pipeline/SKILL.md`   | ship phase                  |
+| Review, polish, deslop, simplify (pre-review pass)  | `.agents/skills/review-pipeline/SKILL.md`           | —                           |
+| Review a plan, validate a plan, critique a spec     | `.agents/skills/review-plan-pipeline/SKILL.md`      | —                           |
+| Debug, fix a bug, "X is broken", production error   | `.agents/skills/debug-pipeline/SKILL.md`            | prod or local (auto-detect) |
 
 Pass the detected mode/phase hint to the pipeline so it doesn't re-derive intent.
 
@@ -48,12 +48,12 @@ Some requests are a single capture step, not a pipeline run — read the skill d
 
 | User intent                                               | Skill to read                                                                                                                               |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Prototype/spike concluded, "capture the decision"         | `.cursor/skills/decision-capture/SKILL.md`                                                                                                  |
-| "Create the follow-up task" after a decision              | `.cursor/skills/handoff-to-implementation/SKILL.md`                                                                                         |
-| "Have we seen this bug before?"                           | `.cursor/skills/pattern-check/SKILL.md`                                                                                                     |
-| "Should we add a rule for this?" after a finding/incident | `.cursor/skills/rule-evolution/SKILL.md`                                                                                                    |
+| Prototype/spike concluded, "capture the decision"         | `.agents/skills/decision-capture/SKILL.md`                                                                                                  |
+| "Create the follow-up task" after a decision              | `.agents/skills/handoff-to-implementation/SKILL.md`                                                                                         |
+| "Have we seen this bug before?"                           | `.agents/skills/pattern-check/SKILL.md`                                                                                                     |
+| "Should we add a rule for this?" after a finding/incident | `.agents/skills/rule-evolution/SKILL.md`                                                                                                    |
 | "Fixed a bug, document it" / retroactive task for branch  | `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Bugfix or From Current Work                                          |
-| "Prototype X", "mock up Y", build a POC                   | `.cursor/skills/single-page-mockup/SKILL.md` + `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Prototype   |
+| "Prototype X", "mock up Y", build a POC                   | `.agents/skills/single-page-mockup/SKILL.md` + `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Prototype   |
 
 If the intent is ambiguous, ask with the AskQuestion tool before proceeding.
 

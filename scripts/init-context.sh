@@ -5,7 +5,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILLS_ROOT="$REPO_ROOT/.cursor/skills"
+SKILLS_ROOT="$REPO_ROOT/.agents/skills"
 
 write_stub() {
   local file="$1"

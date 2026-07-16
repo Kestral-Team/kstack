@@ -1,7 +1,7 @@
 # kstack
 
 Plan, implement, review, and debug — a unified AI development pipeline for
-[Cursor](https://cursor.com), Claude Code, and other agent hosts.
+[Cursor](https://cursor.com), Claude Code, Codex, and other agent hosts.
 
 kstack ships structured skills and a router agent (`kstack`) that delegates to the right pipeline based on your intent.
 Skills include **Kestral MCP integration** to encourage using [Kestral](https://kestral.ai) as your task tracker — but
@@ -17,7 +17,13 @@ git clone https://github.com/Kestral-Team/kstack.git
 Or copy manually:
 
 ```bash
-cp -r kstack/.cursor/ /path/to/your/project/.cursor/
+cp -r kstack/.agents/skills /path/to/your/project/.agents/
+mkdir -p /path/to/your/project/.agents/agents /path/to/your/project/.cursor/agents
+cp kstack/.agents/agents/kstack.md /path/to/your/project/.agents/agents/
+cp kstack/.agents/agents/kstack.md /path/to/your/project/.cursor/agents/
+# Claude Code skill discovery
+mkdir -p /path/to/your/project/.claude
+ln -sfn ../.agents/skills /path/to/your/project/.claude/skills
 ```
 
 Then customize `context.md` files (see [Context overlay](#context-overlay) below).
@@ -124,11 +130,13 @@ Skills load generic workflow from `SKILL.md`, then read `context.md` for your pr
 
 ## Per-host setup
 
-| Host | Install path |
+Canonical root is **`.agents/skills/`** (host-agnostic). `install.sh` also wires host shims:
+
+| Host | What you get |
 | ---- | ------------ |
-| Cursor | `.cursor/skills/` + `.cursor/agents/kstack.md` |
-| Claude Code | Symlink `.claude/skills/` → `.cursor/skills/` (optional) |
-| Codex / Copilot | Copy skills to your host's skills directory |
+| Cursor | `.agents/skills/` + `.cursor/agents/kstack.md` (+ `.cursor/skills` → `.agents/skills` shim) |
+| Claude Code | `.agents/skills/` + `.claude/skills` → `.agents/skills` |
+| Codex / others | `.agents/skills/` (invoke skills with `$skill-name` or your host's skill loader) |
 
 ## Architecture
 

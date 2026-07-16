@@ -4,7 +4,7 @@ kstack skills are generic workflows. **`context.md`** files layer project-specif
 skills.
 
 Each skill directory ships with an empty `context.md` stub. Copy patterns from these templates into the matching skill
-folder under `.cursor/skills/`.
+folder under `.agents/skills/`.
 
 ## Priority order
 
@@ -17,10 +17,10 @@ folder under `.cursor/skills/`.
 
 | Template                    | Copy to                                          |
 | --------------------------- | ------------------------------------------------ |
-| `implement-plan-context.md` | `.cursor/skills/implement-plan/`                 |
-| `code-review-context.md`    | `.cursor/skills/code-review/context.md`          |
-| `code-review-checks.md`     | `.cursor/skills/code-review/context.checks.md`   |
-| `write-plan-context.md`     | `.cursor/skills/write-plan/context.md`           |
-| `deslop-context.md`         | `.cursor/skills/deslop/context.md`               |
+| `implement-plan-context.md` | `.agents/skills/implement-plan/`                 |
+| `code-review-context.md`    | `.agents/skills/code-review/context.md`          |
+| `code-review-checks.md`     | `.agents/skills/code-review/context.checks.md`   |
+| `write-plan-context.md`     | `.agents/skills/write-plan/context.md`           |
+| `deslop-context.md`         | `.agents/skills/deslop/context.md`               |
 
 Run `./scripts/init-context.sh` to recreate empty stubs without overwriting filled files.

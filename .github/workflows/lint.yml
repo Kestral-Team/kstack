@@ -21,7 +21,7 @@ jobs:
             skill_dir="$(dirname "$skill")"
             skill_name="$(basename "$skill_dir")"
             frontmatter_name="$(sed -n 's/^name: //p' "$skill" | head -n 1)"
-            if [ "$(dirname "$skill_dir")" != ".cursor/skills" ]; then
+            if [ "$(dirname "$skill_dir")" != ".agents/skills" ]; then
               echo "Nested skill leaf: $skill"
               missing=1
             fi
@@ -42,7 +42,7 @@ jobs:
             else
               echo "$skill_name" >>"$names_file"
             fi
-          done < <(find .cursor/skills -name SKILL.md | sort)
+          done < <(find .agents/skills -name SKILL.md | sort)
           exit $missing
 
       - name: Check Project Context footer
@@ -58,13 +58,29 @@ jobs:
               echo "Missing context.md link in $skill"
               missing=1
             fi
-          done < <(find .cursor/skills -name SKILL.md)
+          done < <(find .agents/skills -name SKILL.md)
           exit $missing
 
       - name: Check for internal codebase leaks
         run: |
-          if grep -rE "(server/src/|client/src/|@/|cubic\.yaml)" .cursor/skills/; then
+          if grep -rE "(server/src/|client/src/|@/|cubic\.yaml)" .agents/skills/; then
             echo "ERROR: internal codebase references found"
             exit 1
           fi
           echo "No internal codebase leaks"
+
+      - name: Check kstack agent paths
+        run: |
+          set -e
+          if [ ! -f .agents/agents/kstack.md ]; then
+            echo "Missing .agents/agents/kstack.md"
+            exit 1
+          fi
+          if grep -q '\.cursor/skills' .agents/agents/kstack.md; then
+            echo "ERROR: kstack agent still references .cursor/skills"
+            exit 1
+          fi
+          if ! grep -q '\.agents/skills' .agents/agents/kstack.md; then
+            echo "ERROR: kstack agent missing .agents/skills references"
+            exit 1
+          fi

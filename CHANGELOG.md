@@ -2,16 +2,18 @@
 
 ## Unreleased
 
-**Breaking:** Skills are flat direct children of `.cursor/skills/` so Cursor, Claude Code, and other hosts can consume
-the same relative path depth. Skill names and workflows are unchanged.
+**Breaking:** Canonical skill root is `.agents/skills/` (host-agnostic). The `kstack` router lives at
+`.agents/agents/kstack.md`. `install.sh` still places Cursor/Claude shims (`.cursor/agents/kstack.md`,
+`.claude/skills` → `.agents/skills`, `.cursor/skills` → `.agents/skills`).
 
-### Migration from v2
+### Migration from `.cursor/skills` layout
 
-1. Move any customized `context.md` or `context.*.md` files from `.cursor/skills/<category>/<skill>/` to
-   `.cursor/skills/<skill>/`.
-2. Remove the old category directories.
-3. Re-run `./scripts/install.sh /path/to/project`.
-4. Update custom references to remove the category segment from skill paths.
+1. Move any customized `context.md` or `context.*.md` files from `.cursor/skills/<skill>/` to
+   `.agents/skills/<skill>/`.
+2. Re-run `./scripts/install.sh /path/to/project`.
+3. Update custom references from `.cursor/skills/` to `.agents/skills/`.
+4. You can remove a leftover project `.cursor/skills/` directory if it is only an old copy (the installer may replace
+   it with a symlink to `.agents/skills`).
 
 ## v2.0.0 — 2026-07-02
 
