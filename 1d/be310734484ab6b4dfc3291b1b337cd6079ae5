@@ -1,0 +1,43 @@
+examples/context-templates/README.md
+  s_ffb78876a489f1::t_35fb908a47826f 7,20-24
+scripts/init-context.sh
+  s_ffb78876a489f1::t_509fb6068c416b 8
+.github/workflows/lint.yml
+  s_ffb78876a489f1::t_5dae1de30c629c 24,45,61,66,71-86
+README.md
+  s_ffb78876a489f1::t_237c9ac090cb46 4,20-26,133-135,137-139
+CONTRIBUTING.md
+  s_ffb78876a489f1::t_0e9fc9c17c655e 5
+scripts/install.sh
+  s_ffb78876a489f1::t_262badaa3cca1c 2,48-65,119-140,142-143,150-153
+CHANGELOG.md
+  s_ffb78876a489f1::t_f575328bc64182 5-16
+.agents/agents/kstack.md
+  s_ffb78876a489f1::t_d3cd0c8829c34b 30-37,51-54,56
+.agents/skills/debug-pipeline/SKILL.md
+  s_ffb78876a489f1::t_518ebafcc46dd3 27,29,37,44-45,51-52
+.agents/skills/implementation-pipeline/SKILL.md
+  s_ffb78876a489f1::t_9bbb01bb37b0f7 27,36,41,49,54-55,57,59
+.agents/skills/planning-pipeline/SKILL.md
+  s_ffb78876a489f1::t_b3c656c5d1a408 22,29,49-50
+.agents/skills/review-pipeline/SKILL.md
+  s_ffb78876a489f1::t_944f41e90864e0 21,27,33,39,45,51
+.agents/skills/review-plan-pipeline/SKILL.md
+  s_ffb78876a489f1::t_16dc9f6b6288cb 20,28,34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "1dbe310734484ab6b4dfc3291b1b337cd6079ae5",
+  "prompts": {},
+  "sessions": {
+    "s_ffb78876a489f1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "109187ec-efb2-4bca-9b06-5b727badac0c",
+        "model": "grok-4.5"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
