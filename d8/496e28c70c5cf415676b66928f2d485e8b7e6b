@@ -1,0 +1,25 @@
+CHANGELOG.md
+  s_464f7fbcccf90d::t_fe22ce0c5f3572 5-8
+CONTRIBUTING.md
+  s_464f7fbcccf90d::t_371ebc2b76542c 12-17
+README.md
+  s_464f7fbcccf90d::t_bcac6c539a9e34 6-13,28,39-42,55-77,167-175,180-181
+scripts/install.sh
+  s_464f7fbcccf90d::t_488e888bce2af0 28-32,156-158,161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d8496e28c70c5cf415676b66928f2d485e8b7e6b",
+  "prompts": {},
+  "sessions": {
+    "s_464f7fbcccf90d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4cd6ee22-348d-4baa-8b78-1d069d61cfd1",
+        "model": "unknown"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
