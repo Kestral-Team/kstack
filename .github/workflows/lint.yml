@@ -15,16 +15,34 @@ jobs:
         run: |
           set -e
           missing=0
+          names_file="$(mktemp)"
+          trap 'rm -f "$names_file"' EXIT
           while IFS= read -r skill; do
+            skill_dir="$(dirname "$skill")"
+            skill_name="$(basename "$skill_dir")"
+            frontmatter_name="$(sed -n 's/^name: //p' "$skill" | head -n 1)"
+            if [ "$(dirname "$skill_dir")" != ".cursor/skills" ]; then
+              echo "Nested skill leaf: $skill"
+              missing=1
+            fi
             if ! grep -q '^name:' "$skill"; then
               echo "Missing name in $skill"
+              missing=1
+            elif [ "$frontmatter_name" != "$skill_name" ]; then
+              echo "Folder/frontmatter mismatch: $skill_name != $frontmatter_name"
               missing=1
             fi
             if ! grep -q '^description:' "$skill"; then
               echo "Missing description in $skill"
               missing=1
             fi
-          done < <(find .cursor/skills -name SKILL.md)
+            if grep -qxF "$skill_name" "$names_file"; then
+              echo "Duplicate skill name: $skill_name"
+              missing=1
+            else
+              echo "$skill_name" >>"$names_file"
+            fi
+          done < <(find .cursor/skills -name SKILL.md | sort)
           exit $missing
 
       - name: Check Project Context footer

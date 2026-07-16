@@ -25,16 +25,16 @@ that pipeline's SKILL.md and follow it end-to-end. Do not mix pipelines in a sin
 
 ## Routing
 
-| User intent                                         | Pipeline skill to read                                      | Mode/phase hint             |
-| --------------------------------------------------- | ----------------------------------------------------------- | --------------------------- |
-| Plan a feature, write a spec, design something      | `.cursor/skills/pipelines/planning-pipeline/SKILL.md`       | full mode                   |
-| Spike X, de-risk Y, timeboxed investigation         | `.cursor/skills/pipelines/planning-pipeline/SKILL.md`       | spike mode                  |
-| Implement a plan, build a feature from a plan       | `.cursor/skills/pipelines/implementation-pipeline/SKILL.md` | build phase                 |
-| "I'm working on KES-42", pick up a task (no branch) | `.cursor/skills/pipelines/implementation-pipeline/SKILL.md` | pickup → build              |
-| Ship it, get it merged, take to done                | `.cursor/skills/pipelines/implementation-pipeline/SKILL.md` | ship phase                  |
-| Review, polish, deslop, simplify (pre-review pass)  | `.cursor/skills/pipelines/review-pipeline/SKILL.md`         | —                           |
-| Review a plan, validate a plan, critique a spec     | `.cursor/skills/pipelines/review-plan-pipeline/SKILL.md`    | —                           |
-| Debug, fix a bug, "X is broken", production error   | `.cursor/skills/pipelines/debug-pipeline/SKILL.md`          | prod or local (auto-detect) |
+| User intent                                         | Pipeline skill to read                              | Mode/phase hint             |
+| --------------------------------------------------- | --------------------------------------------------- | --------------------------- |
+| Plan a feature, write a spec, design something      | `.cursor/skills/planning-pipeline/SKILL.md`         | full mode                   |
+| Spike X, de-risk Y, timeboxed investigation         | `.cursor/skills/planning-pipeline/SKILL.md`         | spike mode                  |
+| Implement a plan, build a feature from a plan       | `.cursor/skills/implementation-pipeline/SKILL.md`   | build phase                 |
+| "I'm working on KES-42", pick up a task (no branch) | `.cursor/skills/implementation-pipeline/SKILL.md`   | pickup → build              |
+| Ship it, get it merged, take to done                | `.cursor/skills/implementation-pipeline/SKILL.md`   | ship phase                  |
+| Review, polish, deslop, simplify (pre-review pass)  | `.cursor/skills/review-pipeline/SKILL.md`           | —                           |
+| Review a plan, validate a plan, critique a spec     | `.cursor/skills/review-plan-pipeline/SKILL.md`      | —                           |
+| Debug, fix a bug, "X is broken", production error   | `.cursor/skills/debug-pipeline/SKILL.md`            | prod or local (auto-detect) |
 
 Pass the detected mode/phase hint to the pipeline so it doesn't re-derive intent.
 
@@ -46,14 +46,14 @@ drops a pipeline's sync step.
 
 Some requests are a single capture step, not a pipeline run — read the skill directly:
 
-| User intent                                               | Skill to read                                                                                                                                         |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Prototype/spike concluded, "capture the decision"         | `.cursor/skills/prototyping/decision-capture/SKILL.md`                                                                                                |
-| "Create the follow-up task" after a decision              | `.cursor/skills/prototyping/handoff-to-implementation/SKILL.md`                                                                                       |
-| "Have we seen this bug before?"                           | `.cursor/skills/retroactive/pattern-check/SKILL.md`                                                                                                   |
-| "Should we add a rule for this?" after a finding/incident | `.cursor/skills/review/rule-evolution/SKILL.md`                                                                                                       |
+| User intent                                               | Skill to read                                                                                                                               |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Prototype/spike concluded, "capture the decision"         | `.cursor/skills/decision-capture/SKILL.md`                                                                                                  |
+| "Create the follow-up task" after a decision              | `.cursor/skills/handoff-to-implementation/SKILL.md`                                                                                         |
+| "Have we seen this bug before?"                           | `.cursor/skills/pattern-check/SKILL.md`                                                                                                     |
+| "Should we add a rule for this?" after a finding/incident | `.cursor/skills/rule-evolution/SKILL.md`                                                                                                    |
 | "Fixed a bug, document it" / retroactive task for branch  | `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Bugfix or From Current Work                                          |
-| "Prototype X", "mock up Y", build a POC                   | `.cursor/skills/prototyping/single-page-mockup/SKILL.md` + `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Prototype |
+| "Prototype X", "mock up Y", build a POC                   | `.cursor/skills/single-page-mockup/SKILL.md` + `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Prototype   |
 
 If the intent is ambiguous, ask with the AskQuestion tool before proceeding.
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+**Breaking:** Skills are flat direct children of `.cursor/skills/` so Cursor, Claude Code, and other hosts can consume
+the same relative path depth. Skill names and workflows are unchanged.
+
+### Migration from v2
+
+1. Move any customized `context.md` or `context.*.md` files from `.cursor/skills/<category>/<skill>/` to
+   `.cursor/skills/<skill>/`.
+2. Remove the old category directories.
+3. Re-run `./scripts/install.sh /path/to/project`.
+4. Update custom references to remove the category segment from skill paths.
+
 ## v2.0.0 — 2026-07-02
 
 **Breaking:** Category folder structure replaces flat v1 layout.

@@ -29,7 +29,7 @@ EOF
 echo "Initializing context stubs under $SKILLS_ROOT"
 echo ""
 
-for skill_dir in "$SKILLS_ROOT"/*/*; do
+for skill_dir in "$SKILLS_ROOT"/*; do
   [[ -d "$skill_dir" ]] || continue
   [[ -f "$skill_dir/SKILL.md" ]] || continue
   write_stub "$skill_dir/context.md"
@@ -40,7 +40,7 @@ done
 
 echo ""
 echo "Customize these first:"
-echo "  - implementation/implement-plan/context.md"
-echo "  - review/code-review/context.md + context.checks.md"
-echo "  - planning/write-plan/context.md"
-echo "  - shared/kestral-sync/context.md (if using Kestral MCP)"
+echo "  - implement-plan/context.md"
+echo "  - code-review/context.md + context.checks.md"
+echo "  - write-plan/context.md"
+echo "  - kestral-sync/context.md (if using Kestral MCP)"

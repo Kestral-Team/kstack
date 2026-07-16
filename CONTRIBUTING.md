@@ -2,7 +2,7 @@
 
 ## Adding a skill
 
-1. Create `.cursor/skills/<category>/<skill-name>/SKILL.md`
+1. Create `.cursor/skills/<skill-name>/SKILL.md` as a direct child of the skills root
 2. Add YAML frontmatter: `name`, `description` (and `disable-model-invocation: true` for pipelines)
 3. End with the standard **Project Context** footer linking to `./context.md`
 4. Add an empty `context.md` stub (or run `./scripts/init-context.sh`)
@@ -36,6 +36,7 @@ cd ../kstack && git diff  # review, commit, tag
 PRs must pass `.github/workflows/lint.yml`:
 
 - Required SKILL.md frontmatter
+- Flat skill layout with folder names matching frontmatter names
 - Project Context footer on every SKILL.md
 - No internal codebase path leaks
 
