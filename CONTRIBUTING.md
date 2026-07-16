@@ -9,6 +9,12 @@
 5. Update pipeline cross-references if the skill is part of a chain
 6. Update README skill inventory
 
+## Cursor agent (router)
+
+`.agents/agents/kstack.md` is the source for the **Cursor-only** `/kstack` subagent. `install.sh` copies it to
+`.cursor/agents/kstack.md` for Cursor discovery. Claude Code and Codex do not use this agent file — they invoke
+skills under `.agents/skills/` directly. Do not document a `/kstack` router for non-Cursor hosts.
+
 ## SKILL.md vs context.md
 
 | File | Contains |

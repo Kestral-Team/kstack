@@ -25,6 +25,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     -h | --help)
       echo "Usage: $0 <target-project> [--ref <tag>] [--symlink]"
+      echo ""
+      echo "Installs skills under .agents/skills/ (all hosts) and the kstack"
+      echo "router agent for Cursor (.cursor/agents/kstack.md)."
+      echo "Claude Code / Codex get skills only — no /kstack subagent; invoke"
+      echo "pipeline or step skills manually (/planning-pipeline, \$review-pipeline, etc.)."
       exit 0
       ;;
     *)
@@ -148,7 +153,9 @@ if [[ -f "$TARGET/.gitignore" ]] && ! grep -q '^\.kstack/$' "$TARGET/.gitignore"
 fi
 
 echo "Installed kstack into $TARGET/.agents/"
-echo "  Skills:  .agents/skills/"
-echo "  Agent:   .agents/agents/kstack.md (+ .cursor/agents/kstack.md for Cursor)"
+echo "  Skills:  .agents/skills/  (all hosts — invoke pipeline/step skills directly)"
+echo "  Agent:   .agents/agents/kstack.md → .cursor/agents/kstack.md"
+echo "           (Cursor only: enables /kstack router; other hosts have no /kstack)"
 echo "  Shims:   .claude/skills → .agents/skills, .cursor/skills → .agents/skills"
 echo "Next: fill in context.md files (see examples/context-templates/)."
+echo "      Cursor: /kstack …  |  Claude/Codex: /planning-pipeline, \$review-pipeline, etc."

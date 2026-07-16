@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+**Docs:** `/kstack` is documented as **Cursor-only**. Claude Code, Codex, and other hosts invoke pipeline or
+step skills directly (`/planning-pipeline`, `$review-pipeline`, etc.). Skills remain multi-host under
+`.agents/skills/`; only Cursor installs the router agent at `.cursor/agents/kstack.md`.
+
 **Breaking:** Canonical skill root is `.agents/skills/` (host-agnostic). The `kstack` router lives at
 `.agents/agents/kstack.md`. `install.sh` still places Cursor/Claude shims (`.cursor/agents/kstack.md`,
 `.claude/skills` → `.agents/skills`, `.cursor/skills` → `.agents/skills`).
