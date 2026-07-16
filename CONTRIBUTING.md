@@ -2,7 +2,7 @@
 
 ## Adding a skill
 
-1. Create `.cursor/skills/<skill-name>/SKILL.md` as a direct child of the skills root
+1. Create `.agents/skills/<skill-name>/SKILL.md` as a direct child of the skills root
 2. Add YAML frontmatter: `name`, `description` (and `disable-model-invocation: true` for pipelines)
 3. End with the standard **Project Context** footer linking to `./context.md`
 4. Add an empty `context.md` stub (or run `./scripts/init-context.sh`)

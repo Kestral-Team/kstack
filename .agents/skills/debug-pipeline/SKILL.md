@@ -24,9 +24,9 @@ SKILL.md via the Read tool. Mark an item in_progress only after the Read tool ca
 
 ## Step 1: Investigate
 
-- **prod mode:** Read `.cursor/skills/debug-prod/SKILL.md` in full and follow its workflow (gather context,
+- **prod mode:** Read `.agents/skills/debug-prod/SKILL.md` in full and follow its workflow (gather context,
   identify source, pull logs, correlate, hypothesize).
-- **local mode:** Read `.cursor/skills/debugging/SKILL.md` and check the catalog for a matching known bug
+- **local mode:** Read `.agents/skills/debugging/SKILL.md` and check the catalog for a matching known bug
   class first. If no match, investigate directly: reproduce the error, read the failing code path, form a hypothesis.
 
 End this step with a **root cause hypothesis backed by evidence** (logs, stack traces, failing queries, code paths).
@@ -34,22 +34,22 @@ Present it to the user before fixing — if the evidence is inconclusive, say so
 
 ## Step 2: Fix
 
-Read `.cursor/skills/fix-issues/SKILL.md` in full and follow its workflow. Treat the confirmed root cause as
+Read `.agents/skills/fix-issues/SKILL.md` in full and follow its workflow. Treat the confirmed root cause as
 the issue list. Apply the smallest safe fix, run lint/typecheck on touched files.
 
 ## Step 3: Scoped polish
 
 Run a lightweight polish pass **scoped to the files touched by the fix only** — not the full branch diff:
 
-1. Read `.cursor/skills/deslop/SKILL.md` — strip slop from the fix.
-2. Read `.cursor/skills/code-simplify/SKILL.md` — simplify the fix if warranted.
+1. Read `.agents/skills/deslop/SKILL.md` — strip slop from the fix.
+2. Read `.agents/skills/code-simplify/SKILL.md` — simplify the fix if warranted.
 
 Do not run the full review-pipeline; debug fixes should stay small and targeted.
 
 ## Step 4: Pattern check
 
-Read `.cursor/skills/pattern-check/SKILL.md` in full and follow its workflow. Search task history for prior
-occurrences of this issue class. If 3+ matches are found, recommend `.cursor/skills/rule-evolution/SKILL.md` to
+Read `.agents/skills/pattern-check/SKILL.md` in full and follow its workflow. Search task history for prior
+occurrences of this issue class. If 3+ matches are found, recommend `.agents/skills/rule-evolution/SKILL.md` to
 the user.
 
 Skip this step if the task tracker is unavailable (auth check fails) — note the skip in the final summary.

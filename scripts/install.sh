@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install kstack skills into a target project.
+# Install kstack skills into a target project (.agents/-first, with host shims).
 #
 # Usage:
 #   ./scripts/install.sh /path/to/project
@@ -45,8 +45,24 @@ if [[ -z "$TARGET" ]]; then
 fi
 
 TARGET="$(cd "$TARGET" && pwd)"
-TARGET_CURSOR="$TARGET/.cursor"
-mkdir -p "$TARGET_CURSOR/skills" "$TARGET_CURSOR/agents"
+SRC_SKILLS="$REPO_ROOT/.agents/skills"
+SRC_AGENT="$REPO_ROOT/.agents/agents/kstack.md"
+
+if [[ ! -d "$SRC_SKILLS" ]]; then
+  echo "ERROR: skills not found at $SRC_SKILLS" >&2
+  exit 1
+fi
+if [[ ! -f "$SRC_AGENT" ]]; then
+  echo "ERROR: kstack agent not found at $SRC_AGENT" >&2
+  exit 1
+fi
+
+TARGET_AGENTS_SKILLS="$TARGET/.agents/skills"
+TARGET_AGENTS_AGENT_DIR="$TARGET/.agents/agents"
+TARGET_CURSOR_AGENTS="$TARGET/.cursor/agents"
+TARGET_CLAUDE_SKILLS="$TARGET/.claude/skills"
+
+mkdir -p "$TARGET_AGENTS_SKILLS" "$TARGET_AGENTS_AGENT_DIR" "$TARGET_CURSOR_AGENTS"
 
 copy_tree() {
   local src="$1"
@@ -100,16 +116,39 @@ if [[ -n "$REF" ]]; then
 fi
 
 if [[ "$USE_SYMLINK" == true ]]; then
-  link_tree "$REPO_ROOT/.cursor/skills" "$TARGET_CURSOR/skills"
-  ln -sf "$REPO_ROOT/.cursor/agents/kstack.md" "$TARGET_CURSOR/agents/kstack.md"
+  link_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS"
+  ln -sf "$SRC_AGENT" "$TARGET_AGENTS_AGENT_DIR/kstack.md"
 else
-  copy_tree "$REPO_ROOT/.cursor/skills" "$TARGET_CURSOR/skills"
-  cp "$REPO_ROOT/.cursor/agents/kstack.md" "$TARGET_CURSOR/agents/kstack.md"
+  copy_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS"
+  cp "$SRC_AGENT" "$TARGET_AGENTS_AGENT_DIR/kstack.md"
+fi
+
+# Cursor discovers subagents under .cursor/agents/; skills under .agents/skills.
+cp "$TARGET_AGENTS_AGENT_DIR/kstack.md" "$TARGET_CURSOR_AGENTS/kstack.md"
+
+# Claude Code: discover skills via .claude/skills → .agents/skills
+mkdir -p "$TARGET/.claude"
+if [[ -e "$TARGET_CLAUDE_SKILLS" && ! -L "$TARGET_CLAUDE_SKILLS" ]]; then
+  echo "NOTE: $TARGET_CLAUDE_SKILLS already exists and is not a symlink — left unchanged."
+else
+  ln -sfn "../.agents/skills" "$TARGET_CLAUDE_SKILLS"
+fi
+
+# Optional Cursor skills shim for hosts that only look under .cursor/skills
+TARGET_CURSOR_SKILLS="$TARGET/.cursor/skills"
+if [[ -e "$TARGET_CURSOR_SKILLS" && ! -L "$TARGET_CURSOR_SKILLS" ]]; then
+  echo "NOTE: $TARGET_CURSOR_SKILLS already exists and is not a symlink — left unchanged."
+else
+  mkdir -p "$TARGET/.cursor"
+  ln -sfn "../.agents/skills" "$TARGET_CURSOR_SKILLS"
 fi
 
 if [[ -f "$TARGET/.gitignore" ]] && ! grep -q '^\.kstack/$' "$TARGET/.gitignore" 2>/dev/null; then
   printf '\n# kstack clone directory (optional)\n.kstack/\n' >>"$TARGET/.gitignore"
 fi
 
-echo "Installed kstack into $TARGET/.cursor/"
+echo "Installed kstack into $TARGET/.agents/"
+echo "  Skills:  .agents/skills/"
+echo "  Agent:   .agents/agents/kstack.md (+ .cursor/agents/kstack.md for Cursor)"
+echo "  Shims:   .claude/skills → .agents/skills, .cursor/skills → .agents/skills"
 echo "Next: fill in context.md files (see examples/context-templates/)."

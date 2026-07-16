@@ -17,7 +17,7 @@ SKILL.md via the Read tool. Mark an item in_progress only after the Read tool ca
 
 ## Step 1: Validate requirements
 
-Read `.cursor/skills/plan-review/SKILL.md` in full. Use **Mode 2: Requirements Validation**. Treat the plan as
+Read `.agents/skills/plan-review/SKILL.md` in full. Use **Mode 2: Requirements Validation**. Treat the plan as
 the requirements document. Extract atomic requirements, verify each against the codebase, and classify as implemented /
 partial / missing / unclear / needs manual verification.
 
@@ -25,13 +25,13 @@ Present the validation report to the user. Flag any high-risk gaps.
 
 ## Step 2: Review the plan
 
-Read `.cursor/skills/plan-review/SKILL.md` — use **Mode 1: Interactive Plan Review** (which references
+Read `.agents/skills/plan-review/SKILL.md` — use **Mode 1: Interactive Plan Review** (which references
 `review-process.md`). Perform an interactive, section-by-section review of the plan against the codebase. Surface issues
 and pause for user input between sections.
 
 ## Step 3: Product review
 
-Read `.cursor/skills/product-review/SKILL.md` in full (including its `review-process.md` reference) and follow
+Read `.agents/skills/product-review/SKILL.md` in full (including its `review-process.md` reference) and follow
 its workflow. Review the plan for surface area completeness — ensure every place the feature appears in the product is
 accounted for, multi-user collaboration scenarios are considered, and AI agent interaction points are covered.
 

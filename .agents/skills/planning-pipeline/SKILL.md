@@ -19,14 +19,14 @@ Phase 1 (write spike plan), Phase 2 (sync + handoff). Mark Phase 1 in_progress a
 
 ## Phase 1: Write the plan
 
-Read `.cursor/skills/write-plan/SKILL.md` in full and follow its workflow, using the matching plan mode (full,
+Read `.agents/skills/write-plan/SKILL.md` in full and follow its workflow, using the matching plan mode (full,
 spike, or project). Author the plan under `docs/plans/`. Stay within the planning directory — do not implement anything.
 
 Pause after the plan is written and present a summary to the user. Wait for approval before proceeding.
 
 ## Phase 2: Review pass (full mode only)
 
-Read `.cursor/skills/review-plan-pipeline/SKILL.md` in full and follow its workflow.
+Read `.agents/skills/review-plan-pipeline/SKILL.md` in full and follow its workflow.
 
 **Spike mode skips this phase** — a timeboxed question doesn't need a product review pass.
 
@@ -46,8 +46,8 @@ The pipeline ends after Phase 3 — the engineer runs the investigation. Tell th
 lost:
 
 1. Investigate within the timebox (read code, check constraints — if it turns into real building, that's prototyping)
-2. When concluded, invoke `.cursor/skills/decision-capture/SKILL.md` to record the outcome
-3. On proceed, `.cursor/skills/handoff-to-implementation/SKILL.md` creates the follow-up task
+2. When concluded, invoke `.agents/skills/decision-capture/SKILL.md` to record the outcome
+3. On proceed, `.agents/skills/handoff-to-implementation/SKILL.md` creates the follow-up task
 
 ## Final Output
 
