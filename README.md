@@ -3,9 +3,14 @@
 Plan, implement, review, and debug — a unified AI development pipeline for
 [Cursor](https://cursor.com), Claude Code, Codex, and other agent hosts.
 
-kstack ships structured skills and a router agent (`kstack`) that delegates to the right pipeline based on your intent.
-Skills include **Kestral MCP integration** to encourage using [Kestral](https://kestral.ai) as your task tracker — but
-work without Kestral when MCP is not configured.
+kstack ships **skills** that work across hosts, plus a **router agent** that is
+**Cursor-only**. Skills include **Kestral MCP integration** to encourage using
+[Kestral](https://kestral.ai) as your task tracker — but work without Kestral when
+MCP is not configured.
+
+> **`/kstack` is Cursor-only.** It requires `.cursor/agents/kstack.md` (installed
+> from `.agents/agents/kstack.md`). Claude Code, Codex, and other hosts have **no**
+> `/kstack` router — invoke pipeline or step skills directly (see [Usage](#usage)).
 
 ## Quick install
 
@@ -20,6 +25,7 @@ Or copy manually:
 cp -r kstack/.agents/skills /path/to/your/project/.agents/
 mkdir -p /path/to/your/project/.agents/agents /path/to/your/project/.cursor/agents
 cp kstack/.agents/agents/kstack.md /path/to/your/project/.agents/agents/
+# Cursor needs the agent under .cursor/agents/ for /kstack
 cp kstack/.agents/agents/kstack.md /path/to/your/project/.cursor/agents/
 # Claude Code skill discovery
 mkdir -p /path/to/your/project/.claude
@@ -30,7 +36,10 @@ Then customize `context.md` files (see [Context overlay](#context-overlay) below
 
 ## Usage
 
-Invoke the **kstack** subagent, or load individual skills directly.
+### Cursor — `/kstack` router
+
+In Cursor, invoke the **kstack** subagent (`/kstack`). It routes to the right
+pipeline from your intent:
 
 | Intent | Invocation |
 | ------ | ---------- |
@@ -42,6 +51,29 @@ Invoke the **kstack** subagent, or load individual skills directly.
 | Review / polish code | `/kstack review this branch` → review, fix, simplify, deslop, docs |
 | Review a plan | `/kstack review the plan` → validates feasibility + product completeness |
 | Debug prod/local | `/kstack X is broken` → investigate, fix, capture retroactively |
+
+You can still load individual skills in Cursor when you want a single step.
+
+### Other hosts — invoke skills directly
+
+Claude Code, Codex, and similar hosts **do not** provide a `/kstack` subagent.
+Run the matching **pipeline skill** (or a step skill) yourself. Invocation style
+varies by host — for example `/skill-name` in Claude Code, `$skill-name` in
+Codex, or your host’s skill picker.
+
+| Intent | Pipeline / skill | Example |
+| ------ | ---------------- | ------- |
+| Plan a feature | `planning-pipeline` (full) | `/planning-pipeline` · `$planning-pipeline` |
+| Spike / de-risk | `planning-pipeline` (spike) | `/planning-pipeline` · `$planning-pipeline` |
+| Implement a plan | `implementation-pipeline` (build) | `/implementation-pipeline` · `$implementation-pipeline` |
+| Pick up a task | `implementation-pipeline` (pickup→build), or `task-pickup` | `/implementation-pipeline` · `$task-pickup` |
+| Ship / merge-ready | `implementation-pipeline` (ship) | `/implementation-pipeline` · `$implementation-pipeline` |
+| Review / polish code | `review-pipeline` | `/review-pipeline` · `$review-pipeline` |
+| Review a plan | `review-plan-pipeline` | `/review-plan-pipeline` · `$review-plan-pipeline` |
+| Debug prod/local | `debug-pipeline` | `/debug-pipeline` · `$debug-pipeline` |
+
+For a single step without a full pipeline, invoke the step skill directly (e.g.
+`/write-plan`, `$implement-plan`, `/code-review`). See [Skill inventory](#skill-inventory).
 
 ## Skill inventory
 
@@ -132,16 +164,21 @@ Skills load generic workflow from `SKILL.md`, then read `context.md` for your pr
 
 Canonical root is **`.agents/skills/`** (host-agnostic). `install.sh` also wires host shims:
 
-| Host | What you get |
-| ---- | ------------ |
-| Cursor | `.agents/skills/` + `.cursor/agents/kstack.md` (+ `.cursor/skills` → `.agents/skills` shim) |
-| Claude Code | `.agents/skills/` + `.claude/skills` → `.agents/skills` |
-| Codex / others | `.agents/skills/` (invoke skills with `$skill-name` or your host's skill loader) |
+| Host | What you get | How you run workflows |
+| ---- | ------------ | --------------------- |
+| Cursor | Skills + **kstack subagent** at `.cursor/agents/kstack.md` (+ `.cursor/skills` → `.agents/skills` shim) | `/kstack …` router, or individual skills |
+| Claude Code | Skills only (`.claude/skills` → `.agents/skills`) — **no** `/kstack` agent | Invoke pipeline/step skills manually (`/planning-pipeline`, etc.) |
+| Codex / others | Skills only under `.agents/skills/` — **no** `/kstack` agent | Invoke with `$skill-name` or your host’s skill loader |
+
+The agent source of truth is `.agents/agents/kstack.md`. Only Cursor copies it into
+`.cursor/agents/` so the `/kstack` subagent is discoverable. Other hosts ignore that
+path; they use skills, not a router agent.
 
 ## Architecture
 
 ```
-User request → kstack agent → pipeline skill → step skills → context.md overlay
+Cursor:       User request → /kstack agent → pipeline skill → step skills → context.md
+Other hosts:  User request → pipeline/step skill (manual) → step skills → context.md
 ```
 
 Pipeline skills (`*-pipeline/SKILL.md`) orchestrate step skills. Each step skill ends with:
