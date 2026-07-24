@@ -1,5 +1,6 @@
 ---
 name: implement-plan
+kstack: true
 description: >-
   Execute an implementation plan in sequential phases with review checkpoints.
   Use when the user asks to implement a plan or execute a plan step-by-step.

@@ -1,5 +1,6 @@
 ---
 name: write-plan
+kstack: true
 description: >-
   Author structured implementation plan documents. Use when the user asks to write a plan, create an
   implementation plan, design a feature spec, or says /plan.
@@ -29,9 +30,8 @@ The plan is a framed question, not a build plan:
 - **Approach sketch:** 2-3 bullets on how to investigate — not phases, not checklists
 
 Spike plans skip the review pass (`review-plan-pipeline`) — a timeboxed question doesn't need product review. When the
-spike concludes, [decision-capture](../decision-capture/SKILL.md) records the outcome. If the
-investigation requires *building* something substantial, that's prototyping — keep the plan minimal and let the engineer
-iterate.
+spike concludes, [decision-capture](../decision-capture/SKILL.md) records the outcome. If the investigation requires
+*building* something substantial, that's prototyping — keep the plan minimal and let the engineer iterate.
 
 ### Project mode
 
@@ -39,8 +39,9 @@ Adds to the full structure:
 
 - **Workstreams:** parallel tracks of work, each with its own phases and a named owner (or "unassigned")
 - **Milestones:** cross-workstream checkpoints with target outcomes
-- **Task mapping:** Kestral task creation produces a project + phase tasks + subtasks (via
-  `sync_session_workflow({ intent: "create" })` — **From Plan**) rather than flat phase tasks
+- **Task mapping:** After the plan is written, ask one parent for the plan vs a task per phase/deliverable, then create
+  via `sync_session_workflow({ intent: "create" })` — **From Plan** (workstream parents + phase subtasks when
+  appropriate)
 
 ## Plan Directory Selection
 
@@ -59,8 +60,8 @@ Place plans in the project's designated plans directory (see context.md for path
 
 ### Manual test format
 
-Each phase with UI or user-facing changes should include a structured manual test section that the `run-e2e-plan` skill
-can parse and automate via Playwright:
+Each phase with UI or user-facing changes should include a structured manual test section. Keeping the format
+machine-readable lets an E2E runner parse and automate it later:
 
 ```markdown
 ### Phase 1 Manual Tests
@@ -102,8 +103,9 @@ AskQuestion tool liberally to resolve ambiguity before planning.
 ## Task Tracker Integration
 
 If the user referenced a task (URL, slug, or pasted details), look it up for context. Store the task ID in plan
-frontmatter so sync works automatically. After the plan is written, offer to create tracking tasks (see context.md for
-project-specific sync instructions).
+frontmatter so sync works automatically. After the plan is written, offer to create tracking tasks and ask whether they
+want one parent task for the whole plan or a separate task per phase/deliverable (see context.md for project-specific
+sync instructions).
 
 ---
 

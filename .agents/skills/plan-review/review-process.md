@@ -209,8 +209,7 @@ Ready for Topic 1? (yes / skip to [topic] / done)
 - ❌ **No testing strategy** — how will we verify this works?
 - ❌ **Missing GraphQL dual-file updates** — server schema without client operations
 - ❌ **No documentation plan** — changes that affect documented areas without noting which docs to update (use the
-  [documentation-update skill](../documentation-update/SKILL.md) decision matrix to identify affected doc
-  types)
+  [documentation-update skill](../documentation-update/SKILL.md) decision matrix to identify affected doc types)
 - ✅ **End-to-end coverage** — from data model to UI (where applicable)
 
 ### Feasibility & Risk

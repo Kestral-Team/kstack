@@ -1,5 +1,6 @@
 ---
 name: documentation-update
+kstack: true
 description: >-
   Update project docs to match code changes. Use when adding docs, checking what a change requires,
   or syncing docs/skills/commands with code.
@@ -63,7 +64,7 @@ After completing work, reflect on whether skills or commands should be updated. 
 | Signal                                                      | Action                                        |
 | ----------------------------------------------------------- | --------------------------------------------- |
 | Skill workflow was wrong, confusing, or missed an edge case | Update the skill's `SKILL.md`                 |
-| Command produced errors or required workarounds             | Update `.cursor/commands/<name>.md`           |
+| Command/skill produced errors or required workarounds       | Update `.agents/skills/<name>/SKILL.md`       |
 | Had to deviate from a skill's instructions                  | Update the skill to match the correct path    |
 | Skill was hard to discover                                  | Improve the `description` frontmatter         |
 | Skill/command missing for a workflow you did manually       | Suggest creating one (user approval required) |

@@ -1,5 +1,6 @@
 ---
 name: fix-issues
+kstack: true
 description: >-
   Validate reported issues against the codebase and fix confirmed ones with minimal, safe changes.
   Use when the user provides a list of issues, bugs, or review findings to triage and fix.

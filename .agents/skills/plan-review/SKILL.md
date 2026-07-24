@@ -1,5 +1,6 @@
 ---
 name: plan-review
+kstack: true
 description: >-
   Interactive plan review and requirements validation against the codebase. Use when the user asks
   for a plan review, wants to validate an implementation plan, or provides a requirements doc, spec,
@@ -11,8 +12,8 @@ description: >-
 Two modes, same goal: verify that a plan or spec is grounded in codebase reality.
 
 When the plan touches auth/permissions, redirects, file uploads, server-side fetches of user-provided URLs, or rendering
-of user/integration-derived content, apply the Security section of
-[code-review/checks.md](../code-review/checks.md) to the proposed design.
+of user/integration-derived content, apply the Security section of [code-review/checks.md](../code-review/checks.md) to
+the proposed design.
 
 ## Mode 1: Interactive Plan Review
 

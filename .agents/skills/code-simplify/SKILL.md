@@ -1,5 +1,6 @@
 ---
 name: code-simplify
+kstack: true
 description: >-
   Simplify changed code in a PR or branch for readability while preserving behavior. Use when
   the user asks to simplify code, reduce complexity, clean up a PR, or improve readability of

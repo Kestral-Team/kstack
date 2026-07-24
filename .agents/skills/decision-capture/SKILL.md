@@ -1,5 +1,6 @@
 ---
 name: decision-capture
+kstack: true
 description: >-
   Capture the decision when a spike, prototype, or investigation concludes. Use when a prototype or
   spike wraps up, the user makes a go/no-go call after de-risking, or an investigation answers its

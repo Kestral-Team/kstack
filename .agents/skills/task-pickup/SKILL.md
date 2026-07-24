@@ -1,5 +1,6 @@
 ---
 name: task-pickup
+kstack: true
 description: >-
   Claim a task from your task tracker and start working on it. Use when the user says "I'm working
   on [task]", picks up a task from the board, or wants to start an existing task — handles lookup,

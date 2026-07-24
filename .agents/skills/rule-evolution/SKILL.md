@@ -1,5 +1,6 @@
 ---
 name: rule-evolution
+kstack: true
 description: >-
   Turn a review finding or incident into a durable prevention: a new or updated .cursor/rules/*.mdc
   rule, skill check, or checklist item. Use after a review surfaces "we should always check X", after

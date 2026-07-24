@@ -1,5 +1,6 @@
 ---
 name: implementation-pipeline
+kstack: true
 description: >-
   Implementation pipeline with optional pickup and ship phases around the core build: task-pickup →
   implement-plan → review-pipeline polish pass → acceptance-check + merge readiness. Only invoked by
@@ -24,8 +25,8 @@ and Ship are optional entry/exit phases.
 
 ## Phase 0: Pickup (optional)
 
-Read `.agents/skills/task-pickup/SKILL.md` in full and follow its workflow: task lookup, conflict check,
-derive and confirm branch name, `claim_task_and_branch`, then create the git branch (ask before git state changes).
+Read `.agents/skills/task-pickup/SKILL.md` in full and follow its workflow: task lookup, conflict check, derive and
+confirm branch name, `claim_task_and_branch`, then create the git branch (ask before git state changes).
 
 ## Phase 1: Implement the plan
 
@@ -33,14 +34,14 @@ derive and confirm branch name, `claim_task_and_branch`, then create the git bra
 resolved task ID. Otherwise, check for conflicts via the task tracker (see context.md for project-specific conflict
 check API). If another member is actively working on the same task, pause and inform the user before proceeding.
 
-Read `.agents/skills/implement-plan/SKILL.md` in full and follow its workflow. Execute the plan in phases
-aligned with its structure. After each phase, update the plan file and pause for user approval (unless the user
-specifies continuous mode).
+Read `.agents/skills/implement-plan/SKILL.md` in full and follow its workflow. Execute the plan in phases aligned with
+its structure. After each phase, update the plan file and pause for user approval (unless the user specifies continuous
+mode).
 
 **After each phase (phased mode only):** Check if the plan has a `### Phase N Manual Tests` section for the
-just-completed phase. If it does, offer to run E2E tests via `.agents/skills/run-e2e-plan/SKILL.md`
-before proceeding to the next phase. If the section doesn't exist, skip without prompting. In **continuous mode**, skip
-test execution entirely — tests run during Ship or on-demand via `/run-e2e`.
+just-completed phase. If it does, offer to run those tests before proceeding to the next phase (see context.md for the
+project's E2E runner). If the section doesn't exist, skip without prompting. In **continuous mode**, skip test execution
+entirely — tests run during Ship or on demand.
 
 When all implementation phases are complete, proceed to Phase 2.
 
@@ -50,14 +51,13 @@ Read `.agents/skills/review-pipeline/SKILL.md` in full and follow its workflow.
 
 ## Phase 3: Ship (optional)
 
-1. **Automated manual tests:** If the plan already has `### Phase N Manual Tests` sections, read
-   `.agents/skills/run-e2e-plan/SKILL.md` and run them. If the plan has no structured test sections, read
-   `.agents/skills/manual-test-plan/SKILL.md` to generate a test plan from the diff first, then run it
-   via `run-e2e-plan`. Present results with screenshots and pause for user verification.
-2. Read `.agents/skills/babysit-pr/SKILL.md` — resolve comments, fix CI, resolve conflicts until
-   merge-ready.
-3. Read `.agents/skills/acceptance-check/SKILL.md` — validate the diff against the task's acceptance
-   criteria. Surface gaps; never silently mark done.
+1. **Verify behavior:** If the plan has `### Phase N Manual Tests` sections, run them. If it doesn't, derive a short
+   test plan from the branch diff first, then run that. Present results (with screenshots where the runner produces
+   them) and pause for user verification. See context.md for the project's test-plan and E2E tooling.
+2. **Get the PR merge-ready:** triage review comments, fix CI failures, and resolve conflicts with the base branch,
+   looping until checks are green and the PR is mergeable. See context.md for the project's PR babysitting workflow.
+3. Read `.agents/skills/acceptance-check/SKILL.md` — validate the diff against the task's acceptance criteria. Surface
+   gaps; never silently mark done.
 4. Set status based on PR merge state: `awaiting_review` while PR is open/unmerged; `done` **only** when PR is merged
    (or no PR exists and the user explicitly confirms completion). **Never set `done` on an unmerged PR** — passing
    acceptance criteria does not mean the task is done.

@@ -1,5 +1,6 @@
 ---
 name: deslop
+kstack: true
 description: >-
   Remove AI-generated slop from the branch diff. Strips redundant comments, unnecessary casts,
   extra defensive code, and style inconsistencies. Use when cleaning up AI-generated code,

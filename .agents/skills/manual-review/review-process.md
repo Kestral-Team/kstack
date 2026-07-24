@@ -92,6 +92,11 @@ showing before/after behavior.
 
 **Always pause here.** User decides before proceeding.
 
+When an issue is confirmed real but **deferred** (not fixed in this PR — scale, out-of-scope hardenings, intentional
+trust-model gaps), treat it as a follow-up candidate: note it in findings as “track as follow-up,” and when the user
+agrees it should not be fixed now, **ask** whether to create a Kestral task (see
+[Track Follow-ups](#track-follow-ups-in-kestral)). Do not auto-create tasks without confirmation.
+
 ### 4. Fix Issues (if requested)
 
 Apply fixes, run typecheck/lint, summarize, then ask: "Ready for next section?"
@@ -136,19 +141,43 @@ Use the documentation-update skill decision matrix to identify affected doc type
 
 Include `docs/costs.md` when the PR changes models or cost-relevant LLM usage.
 Include `docs/development_process/featureFlags.md` when feature flags are added/removed/changed.
+Include `docs/mcp/testing.md` (and `docs/mcp/README.md` for caller-facing contracts) when the PR changes MCP registry
+ops, compound handlers, sync workflows, or plugin ambient-sync hooks — see context.md.
 
 ### Recommended Next Steps
 
 1. Read and follow the [deslop skill](../deslop/SKILL.md) to clean up AI-generated code artifacts
-2. Run refactor-prompt skill (Mode 2: Detect Evalmaxxing) if PR touches agent instructions alongside eval fixtures
+2. Check for prompt overfitting if the PR touches agent instructions alongside eval fixtures
 3. [Any other follow-up actions]
+4. If deferred follow-ups remain untracked, run [Track Follow-ups](#track-follow-ups-in-kestral) before closing
 ```
+
+---
+
+## Track Follow-ups in Kestral
+
+Whenever the review surfaces work that should **not** land in this PR but still needs ownership (deferred findings,
+scale follow-ups, intentional trust-model gaps, out-of-scope hardenings):
+
+1. Collect the follow-ups (title + one-line why deferred). Include any already noted during per-section pauses that were
+   not yet filed.
+2. Ask:
+
+   > Track these as Kestral tasks? (yes / pick which / skip)
+
+3. On **yes** or **pick which**: create tasks via Kestral MCP (`create_task` in the same project as the linked review
+   task when known), relate them to the parent task (`create_task_relationship` type `related`), and comment on the
+   parent with links.
+4. On **skip**: leave them review-only and say so briefly.
+
+Do **not** auto-create tasks without confirmation. In-PR fixes and merge blockers are not follow-ups.
 
 ---
 
 ## Kestral Sync
 
-After presenting the Final Summary, optionally sync review findings to the linked Kestral task.
+After presenting the Final Summary (and after follow-up tracking if applicable), optionally sync review findings to the
+linked Kestral task.
 
 ### Step 1: Task lookup
 

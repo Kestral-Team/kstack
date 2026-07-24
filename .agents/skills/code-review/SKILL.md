@@ -1,5 +1,6 @@
 ---
 name: code-review
+kstack: true
 description: >-
   One-pass AI code review of a PR or branch diff (tech-lead style). Use when the user asks for a
   code review, PR review, AI review, or wants code quality, architecture, bugs, and patterns reviewed.
@@ -8,7 +9,7 @@ description: >-
 # Code Review
 
 Read [review-process.md](review-process.md) for the full review workflow including context gathering, section planning,
-scrutiny criteria, and output format.
+scrutiny criteria, output format, and **asking to track deferred follow-ups as Kestral tasks**.
 
 Read [checks.md](checks.md) for shared architectural and runtime checks to apply during review.
 
@@ -19,6 +20,8 @@ Read [checks.md](checks.md) for shared architectural and runtime checks to apply
 - **Distinguish severity** — blockers vs. nitpicks matter; when in doubt, escalate
 - **Challenge complexity** — demand justification for every non-trivial decision
 - **Think holistically** — consider ripple effects across the system
+- **Ask to track deferred follow-ups** — when work should not land in this PR but still needs ownership, ask before
+  creating Kestral tasks (never auto-create)
 
 ---
 

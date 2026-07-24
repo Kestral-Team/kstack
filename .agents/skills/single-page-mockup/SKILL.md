@@ -1,5 +1,6 @@
 ---
 name: single-page-mockup
+kstack: true
 description: >-
   Create a single self-contained HTML file that mocks a feature using inline React and CSS.
   Use when the user asks to prototype a UI flow, build a mockup, create a shareable demo,
