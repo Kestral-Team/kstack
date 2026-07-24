@@ -1,0 +1,77 @@
+.agents/agents/kstack.md
+  s_e874aa3af62f6b::t_543c39a631e8dd 28-37,49-56,82-84,95-96
+.agents/skills/acceptance-check/SKILL.md
+  s_e874aa3af62f6b::t_bea42e42f3588a 3
+.agents/skills/code-review/SKILL.md
+  s_e874aa3af62f6b::t_ecdcb775a64a23 3,12,23-24
+.agents/skills/code-review/review-process.md
+  s_e874aa3af62f6b::t_3e4efa129a7020 190-210
+.agents/skills/code-simplify/SKILL.md
+  s_e874aa3af62f6b::t_883fd800371598 3
+.agents/skills/code-simplify/patterns.md
+  s_e874aa3af62f6b::t_8ac5d835ae13f4 8
+.agents/skills/context-evolve/SKILL.md
+  s_e874aa3af62f6b::t_4b06a786725e72 3,19,40-46
+.agents/skills/debug-pipeline/SKILL.md
+  s_e874aa3af62f6b::t_5edb9c5a8254d8 3,5-6,27-37,44-45,58-59
+.agents/skills/decision-capture/SKILL.md
+  s_e874aa3af62f6b::t_1bb5a1b5905b11 3
+.agents/skills/deslop/SKILL.md
+  s_e874aa3af62f6b::t_df2e4e21807110 3
+.agents/skills/documentation-update/SKILL.md
+  s_e874aa3af62f6b::t_9a14ee046e9784 3,67
+.agents/skills/fix-issues/SKILL.md
+  s_e874aa3af62f6b::t_67f8d93979adb2 3
+.agents/skills/grill-me/SKILL.md
+  s_e874aa3af62f6b::t_11e3b7e8bc475b 2-4,7-8,10-11,13-14,16
+.agents/skills/handoff-to-implementation/SKILL.md
+  s_e874aa3af62f6b::t_2a4199e9faf600 3
+.agents/skills/implement-plan/SKILL.md
+  s_e874aa3af62f6b::t_85fa36d684d5f5 3
+.agents/skills/implementation-pipeline/SKILL.md
+  s_e874aa3af62f6b::t_e7d44e753eed07 3,28-29,37-39,42-44,54-60
+.agents/skills/kestral-sync/SKILL.md
+  s_e874aa3af62f6b::t_078564ab1d3fed 3,5-6,11-18,25
+.agents/skills/manual-review/SKILL.md
+  s_e874aa3af62f6b::t_5eada10967204b 3,7-8,17-18
+.agents/skills/manual-review/review-process.md
+  s_e874aa3af62f6b::t_9c0822796214dd 95-99,144-145,150,152,157-176,179-180
+.agents/skills/pattern-check/SKILL.md
+  s_e874aa3af62f6b::t_69db680c3185ef 3,42-45
+.agents/skills/plan-review/SKILL.md
+  s_e874aa3af62f6b::t_72495bd9c2f4ac 3,15-16
+.agents/skills/plan-review/review-process.md
+  s_e874aa3af62f6b::t_8c2ce0a9957ad4 212
+.agents/skills/planning-pipeline/SKILL.md
+  s_e874aa3af62f6b::t_bc1e6c5c4668b6 3,23-24
+.agents/skills/product-review/SKILL.md
+  s_e874aa3af62f6b::t_21e37723a981da 3
+.agents/skills/review-pipeline/SKILL.md
+  s_e874aa3af62f6b::t_d7a4db983a4867 3,22-23,28-30,34-36,40-42,46-47,52-53
+.agents/skills/review-plan-pipeline/SKILL.md
+  s_e874aa3af62f6b::t_69f094f4bf1335 3,21-22,35-36
+.agents/skills/rule-evolution/SKILL.md
+  s_e874aa3af62f6b::t_8d3e5f94153eba 3
+.agents/skills/single-page-mockup/SKILL.md
+  s_e874aa3af62f6b::t_c5885942f70029 3
+.agents/skills/task-pickup/SKILL.md
+  s_e874aa3af62f6b::t_b535310cd1ee74 3
+.agents/skills/write-plan/SKILL.md
+  s_e874aa3af62f6b::t_ce472ef40e440e 3,33-34,42-44,63-64,106-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d102a0d602cce3496b3c64cbf3cefa786dc9859f",
+  "prompts": {},
+  "sessions": {
+    "s_e874aa3af62f6b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "025b07b7-ac3f-4869-baf2-7eb4fb9a101b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
