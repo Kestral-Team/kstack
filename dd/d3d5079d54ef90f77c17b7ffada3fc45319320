@@ -1,0 +1,26 @@
+README.md
+  s_580ea98436b850::t_d11c6e801ddb88 37-40
+scripts/retired-skills.txt
+  s_580ea98436b850::t_0bf61f2c4616c4 1-15
+CHANGELOG.md
+  s_580ea98436b850::t_1654357c2de643 5-9
+scripts/install.sh
+  s_580ea98436b850::t_b3d6e4bf6eeb72 8-11,37-40,63,78
+  s_580ea98436b850::t_6a4bc97a89dea9 128-197,203-204,213-215,242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "ddd3d5079d54ef90f77c17b7ffada3fc45319320",
+  "prompts": {},
+  "sessions": {
+    "s_580ea98436b850": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "63038d1d-159f-4515-9b2d-0aac9fee4a9c",
+        "model": "grok-4.5"
+      },
+      "human_author": null
+    }
+  }
+}
