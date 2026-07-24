@@ -1,5 +1,6 @@
 ---
 name: handoff-to-implementation
+kstack: true
 description: >-
   Create a follow-up implementation task with decision context pre-filled after a spike or prototype
   concludes with "proceed". Use when a validated approach needs to become trackable implementation

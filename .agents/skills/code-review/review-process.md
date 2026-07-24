@@ -187,6 +187,27 @@ Issues that span multiple sections or affect the PR as a whole:
 
 ---
 
+## Step 5: Track Follow-ups in Kestral
+
+After the report, if any findings are **deferred follow-ups** (not fixed in this PR — e.g. scale work, intentional
+trust-model gaps, out-of-scope hardenings, doc sync in another plan), **do not silently leave them in the review
+text only**.
+
+1. List each follow-up as a short title + why it is deferred (1 line each).
+2. Ask the user:
+
+   > Track these as Kestral tasks? (yes / pick which / skip)
+
+3. On **yes** or **pick which**: use Kestral MCP (`search_operations` → `create_task`, then `create_task_relationship`
+   related to the reviewed task when known). Prefer the same project as the linked review task. Comment on the parent
+   task with links to the new follow-ups.
+4. On **skip**: note that follow-ups remain review-only.
+
+Do **not** auto-create tasks without confirmation. Merge blockers and in-PR fixes are not follow-ups — only work that
+should live as separate tracked items.
+
+---
+
 ## Review Principles
 
 - **Assume bugs exist** — your job is to find them. Every line is suspicious until you've convinced yourself it's

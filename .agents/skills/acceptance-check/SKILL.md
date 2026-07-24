@@ -1,5 +1,6 @@
 ---
 name: acceptance-check
+kstack: true
 description: >-
   Validate the branch diff against the task's acceptance criteria before marking it done.
   Use when implementation looks complete, before a status update to done/awaiting_review, or when

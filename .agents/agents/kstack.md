@@ -25,16 +25,16 @@ that pipeline's SKILL.md and follow it end-to-end. Do not mix pipelines in a sin
 
 ## Routing
 
-| User intent                                         | Pipeline skill to read                              | Mode/phase hint             |
-| --------------------------------------------------- | --------------------------------------------------- | --------------------------- |
-| Plan a feature, write a spec, design something      | `.agents/skills/planning-pipeline/SKILL.md`         | full mode                   |
-| Spike X, de-risk Y, timeboxed investigation         | `.agents/skills/planning-pipeline/SKILL.md`         | spike mode                  |
-| Implement a plan, build a feature from a plan       | `.agents/skills/implementation-pipeline/SKILL.md`   | build phase                 |
-| "I'm working on KES-42", pick up a task (no branch) | `.agents/skills/implementation-pipeline/SKILL.md`   | pickup → build              |
-| Ship it, get it merged, take to done                | `.agents/skills/implementation-pipeline/SKILL.md`   | ship phase                  |
-| Review, polish, deslop, simplify (pre-review pass)  | `.agents/skills/review-pipeline/SKILL.md`           | —                           |
-| Review a plan, validate a plan, critique a spec     | `.agents/skills/review-plan-pipeline/SKILL.md`      | —                           |
-| Debug, fix a bug, "X is broken", production error   | `.agents/skills/debug-pipeline/SKILL.md`            | prod or local (auto-detect) |
+| User intent                                         | Pipeline skill to read                            | Mode/phase hint             |
+| --------------------------------------------------- | ------------------------------------------------- | --------------------------- |
+| Plan a feature, write a spec, design something      | `.agents/skills/planning-pipeline/SKILL.md`       | full mode                   |
+| Spike X, de-risk Y, timeboxed investigation         | `.agents/skills/planning-pipeline/SKILL.md`       | spike mode                  |
+| Implement a plan, build a feature from a plan       | `.agents/skills/implementation-pipeline/SKILL.md` | build phase                 |
+| "I'm working on KES-42", pick up a task (no branch) | `.agents/skills/implementation-pipeline/SKILL.md` | pickup → build              |
+| Ship it, get it merged, take to done                | `.agents/skills/implementation-pipeline/SKILL.md` | ship phase                  |
+| Review, polish, deslop, simplify (pre-review pass)  | `.agents/skills/review-pipeline/SKILL.md`         | —                           |
+| Review a plan, validate a plan, critique a spec     | `.agents/skills/review-plan-pipeline/SKILL.md`    | —                           |
+| Debug, fix a bug, "X is broken", production error   | `.agents/skills/debug-pipeline/SKILL.md`          | prod or local (auto-detect) |
 
 Pass the detected mode/phase hint to the pipeline so it doesn't re-derive intent.
 
@@ -46,14 +46,14 @@ drops a pipeline's sync step.
 
 Some requests are a single capture step, not a pipeline run — read the skill directly:
 
-| User intent                                               | Skill to read                                                                                                                               |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Prototype/spike concluded, "capture the decision"         | `.agents/skills/decision-capture/SKILL.md`                                                                                                  |
-| "Create the follow-up task" after a decision              | `.agents/skills/handoff-to-implementation/SKILL.md`                                                                                         |
-| "Have we seen this bug before?"                           | `.agents/skills/pattern-check/SKILL.md`                                                                                                     |
-| "Should we add a rule for this?" after a finding/incident | `.agents/skills/rule-evolution/SKILL.md`                                                                                                    |
-| "Fixed a bug, document it" / retroactive task for branch  | `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Bugfix or From Current Work                                          |
-| "Prototype X", "mock up Y", build a POC                   | `.agents/skills/single-page-mockup/SKILL.md` + `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Prototype   |
+| User intent                                               | Skill to read                                                                                                                             |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Prototype/spike concluded, "capture the decision"         | `.agents/skills/decision-capture/SKILL.md`                                                                                                |
+| "Create the follow-up task" after a decision              | `.agents/skills/handoff-to-implementation/SKILL.md`                                                                                       |
+| "Have we seen this bug before?"                           | `.agents/skills/pattern-check/SKILL.md`                                                                                                   |
+| "Should we add a rule for this?" after a finding/incident | `.agents/skills/rule-evolution/SKILL.md`                                                                                                  |
+| "Fixed a bug, document it" / retroactive task for branch  | `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Bugfix or From Current Work                              |
+| "Prototype X", "mock up Y", build a POC                   | `.agents/skills/single-page-mockup/SKILL.md` + `execute_operation("sync_session_workflow", { intent: "create" })` — follow From Prototype |
 
 If the intent is ambiguous, ask with the AskQuestion tool before proceeding.
 
@@ -79,8 +79,9 @@ user is aware of the task's state, and `task-pickup` runs its own conflict check
 
 ## Post-Pipeline Kestral Sync
 
-The `postToolUse` hook auto-syncs after every push/submit/PR create (`update_or_create` intent). This catchall covers
-the remaining case: **work that concludes without a push** (e.g. planning, spike, review that didn't fix anything).
+The `postToolUse` hook prompts one `sync_after_push` call after every push/submit/PR create. Unlinked branches require a
+once-per-session creation decision; ambiguous branch matches require task selection. This catchall covers the remaining
+case: **work that concludes without a push** (e.g. planning, spike, review that didn't fix anything).
 
 If all of the following are true, run the catchall:
 
@@ -91,7 +92,7 @@ If all of the following are true, run the catchall:
 3. No push/submit/PR create fired in this session (which would have triggered the hook)
 
 When the catchall applies: call `execute_operation("sync_session_workflow", { intent: "update" })` and follow **Task
-Lookup** + **Full Sync**. If no task matches, call with `{ intent: "create" }` and follow **Unlinked Branch —
-Auto-Create** (only ask the user if the project is ambiguous).
+Lookup** + **Full Sync**. If no task matches, ask the user once this session whether to create one. Only after approval,
+call with `{ intent: "create" }` and follow **Unlinked Branch — Explicit Create**.
 
 Every kstack final response MUST end with a `Kestral sync:` status line stating what was posted or why it was skipped.

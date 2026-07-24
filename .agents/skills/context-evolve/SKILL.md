@@ -1,5 +1,6 @@
 ---
 name: context-evolve
+kstack: true
 description: >-
   Capture new project-specific learnings into context files. Runs during reviews or after debugging
   to evolve the project's skill knowledge base. Use when the thread reveals patterns, anti-patterns,
@@ -15,7 +16,7 @@ Scan the current thread for new learnings and propose additions to the appropria
 - End of `code-review` (after findings are written)
 - End of `manual-review` (after discussion concludes)
 - Explicitly invoked: "update context", "remember this pattern", "add this to our checks"
-- Optionally after `fix-issues` or `debugging` when a new codebase pattern is discovered
+- Optionally after `fix-issues` or a debugging session when a new codebase pattern is discovered
 
 ## Workflow
 
@@ -36,14 +37,13 @@ Look for:
 
 Determine the target context file:
 
-| Learning type             | Target                                                                  |
-| ------------------------- | ----------------------------------------------------------------------- |
-| Security or quality check | `../code-review/context.checks.md`                                      |
-| Review ordering or focus  | `../code-review/context.md` or `../manual-review/context.md`            |
-| Implementation convention | Relevant skill under `../<skill>/context.md`                         |
-| Testing pattern           | `../testing-patterns/context.md`                                   |
-| Debugging pattern         | `../debugging/context.md`                                          |
-| Build/deploy convention   | Relevant pipeline under `../<pipeline>/context.md`                 |
+| Learning type             | Target                                                              |
+| ------------------------- | ------------------------------------------------------------------- |
+| Security or quality check | `../code-review/context.checks.md`                                  |
+| Review ordering or focus  | `../code-review/context.md` or `../manual-review/context.md`        |
+| Implementation convention | Relevant skill under `../<skill>/context.md`                        |
+| Testing or debugging      | The testing/debugging skill's `../<skill>/context.md`, if present   |
+| Build/deploy convention   | Relevant pipeline under `../<pipeline>/context.md`                  |
 | General project knowledge | Closest matching skill's `context.md` (use `../<skill>/context.md`) |
 
 If no existing context file is appropriate, propose creating a new one in the most relevant skill directory.

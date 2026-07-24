@@ -1,5 +1,6 @@
 ---
 name: product-review
+kstack: true
 description: >-
   Product consistency and completeness review. Use when the user asks for a product review, wants
   to check surface area completeness, multi-user collaboration scenarios, or AI agent interaction

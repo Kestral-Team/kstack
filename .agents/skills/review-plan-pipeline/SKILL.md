@@ -1,5 +1,6 @@
 ---
 name: review-plan-pipeline
+kstack: true
 description: >-
   Fixed four-step plan review pipeline: plan-review (requirements validation mode), plan-review
   (interactive mode), product-review, review summary to Kestral. Orchestrates the full review pass
@@ -17,8 +18,8 @@ SKILL.md via the Read tool. Mark an item in_progress only after the Read tool ca
 
 ## Step 1: Validate requirements
 
-Read `.agents/skills/plan-review/SKILL.md` in full. Use **Mode 2: Requirements Validation**. Treat the plan as
-the requirements document. Extract atomic requirements, verify each against the codebase, and classify as implemented /
+Read `.agents/skills/plan-review/SKILL.md` in full. Use **Mode 2: Requirements Validation**. Treat the plan as the
+requirements document. Extract atomic requirements, verify each against the codebase, and classify as implemented /
 partial / missing / unclear / needs manual verification.
 
 Present the validation report to the user. Flag any high-risk gaps.
@@ -31,8 +32,8 @@ and pause for user input between sections.
 
 ## Step 3: Product review
 
-Read `.agents/skills/product-review/SKILL.md` in full (including its `review-process.md` reference) and follow
-its workflow. Review the plan for surface area completeness — ensure every place the feature appears in the product is
+Read `.agents/skills/product-review/SKILL.md` in full (including its `review-process.md` reference) and follow its
+workflow. Review the plan for surface area completeness — ensure every place the feature appears in the product is
 accounted for, multi-user collaboration scenarios are considered, and AI agent interaction points are covered.
 
 ## Step 4: Review summary to task tracker

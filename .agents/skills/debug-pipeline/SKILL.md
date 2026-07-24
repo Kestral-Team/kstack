@@ -1,9 +1,9 @@
 ---
 name: debug-pipeline
+kstack: true
 description: >-
-  Debug pipeline: investigate (debug-prod or debugging) → fix-issues → scoped polish (deslop +
-  code-simplify) → pattern-check → kestral-sync retroactive capture. Only invoked by the kstack
-  subagent.
+  Debug pipeline: investigate (prod or local) → fix-issues → scoped polish (deslop + code-simplify)
+  → pattern-check → kestral-sync retroactive capture. Only invoked by the kstack subagent.
 disable-model-invocation: true
 ---
 
@@ -24,18 +24,25 @@ SKILL.md via the Read tool. Mark an item in_progress only after the Read tool ca
 
 ## Step 1: Investigate
 
-- **prod mode:** Read `.agents/skills/debug-prod/SKILL.md` in full and follow its workflow (gather context,
-  identify source, pull logs, correlate, hypothesize).
-- **local mode:** Read `.agents/skills/debugging/SKILL.md` and check the catalog for a matching known bug
-  class first. If no match, investigate directly: reproduce the error, read the failing code path, form a hypothesis.
+**prod mode** — work from deployed evidence, not assumptions:
+
+1. Gather the symptom, error message, affected users or endpoints, and time window. Check recent deploys.
+2. Identify whether the failure is in the service or a background job.
+3. Pull logs for that window, starting narrow (±2 min) and widening as needed.
+4. Correlate against recent code changes (`git log`) and deployment history.
+
+**local mode** — reproduce before theorizing: trigger the error, read the failing code path, and form a hypothesis. If
+the project keeps a catalog of known bug classes, check it for a match first.
+
+See context.md for the project's log/error-tracking tooling and any debugging catalog.
 
 End this step with a **root cause hypothesis backed by evidence** (logs, stack traces, failing queries, code paths).
 Present it to the user before fixing — if the evidence is inconclusive, say so and keep digging rather than guessing.
 
 ## Step 2: Fix
 
-Read `.agents/skills/fix-issues/SKILL.md` in full and follow its workflow. Treat the confirmed root cause as
-the issue list. Apply the smallest safe fix, run lint/typecheck on touched files.
+Read `.agents/skills/fix-issues/SKILL.md` in full and follow its workflow. Treat the confirmed root cause as the issue
+list. Apply the smallest safe fix, run lint/typecheck on touched files.
 
 ## Step 3: Scoped polish
 
@@ -48,9 +55,8 @@ Do not run the full review-pipeline; debug fixes should stay small and targeted.
 
 ## Step 4: Pattern check
 
-Read `.agents/skills/pattern-check/SKILL.md` in full and follow its workflow. Search task history for prior
-occurrences of this issue class. If 3+ matches are found, recommend `.agents/skills/rule-evolution/SKILL.md` to
-the user.
+Read `.agents/skills/pattern-check/SKILL.md` in full and follow its workflow. Search task history for prior occurrences
+of this issue class. If 3+ matches are found, recommend `.agents/skills/rule-evolution/SKILL.md` to the user.
 
 Skip this step if the task tracker is unavailable (auth check fails) — note the skip in the final summary.
 

@@ -1,5 +1,6 @@
 ---
 name: planning-pipeline
+kstack: true
 description: >-
   Planning pipeline: write-plan, then hand off to review-plan-pipeline for the full review pass
   (plan-review, product-review). Spike mode skips the review pass and ends with decision capture.
@@ -19,8 +20,8 @@ Phase 1 (write spike plan), Phase 2 (sync + handoff). Mark Phase 1 in_progress a
 
 ## Phase 1: Write the plan
 
-Read `.agents/skills/write-plan/SKILL.md` in full and follow its workflow, using the matching plan mode (full,
-spike, or project). Author the plan under `docs/plans/`. Stay within the planning directory — do not implement anything.
+Read `.agents/skills/write-plan/SKILL.md` in full and follow its workflow, using the matching plan mode (full, spike, or
+project). Author the plan under `docs/plans/`. Stay within the planning directory — do not implement anything.
 
 Pause after the plan is written and present a summary to the user. Wait for approval before proceeding.
 

@@ -5,7 +5,7 @@
 - **Nested ternaries** → early returns or if/else
 - **`as any` or `as unknown as`** → proper types or type guards
 - **Raw `console.log/error`** → `logger` from your project logger module
-- **Raw SQL strings** → Kysely in `*Queries.ts` files
+- **Raw SQL strings** → Kysely under `db/queries/<physicalTable>/`
 
 ## Conditional Logic
 

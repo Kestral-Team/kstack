@@ -1,5 +1,6 @@
 ---
 name: pattern-check
+kstack: true
 description: >-
   Search existing tasks and incidents for similar bugs or review misses, and link related issues.
   Use after creating a retroactive bugfix task, when a review finds a familiar-looking issue, or
@@ -38,10 +39,10 @@ Search your task tracker for prior instances (see context.md for project-specifi
 
 ### 3. Classify the result
 
-| Matches found | Verdict           | Action                                                                        |
-| ------------- | ----------------- | ----------------------------------------------------------------------------- |
-| 0             | One-off           | Note "no prior pattern" on the task; done                                     |
-| 1-2           | Possible cluster  | Link the related tasks; flag for attention                                    |
+| Matches found | Verdict           | Action                                                              |
+| ------------- | ----------------- | ------------------------------------------------------------------- |
+| 0             | One-off           | Note "no prior pattern" on the task; done                           |
+| 1-2           | Possible cluster  | Link the related tasks; flag for attention                          |
 | 3+            | Confirmed pattern | Link tasks + recommend [rule-evolution](../rule-evolution/SKILL.md) |
 
 ### 4. Link and report
