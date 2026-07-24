@@ -1,0 +1,15 @@
+# Skills previously shipped by kstack that are no longer published.
+# install.sh removes these from a target project on reinstall when present,
+# even before a .agents/.kstack-skills manifest exists.
+# One skill directory name per line. Lines starting with # are ignored.
+babysit-pr
+cleanup-plans
+manual-test-plan
+run-e2e-plan
+debug-prod
+debugging
+graphql-patterns
+testing-patterns
+write-migration
+evals
+refactor-prompt

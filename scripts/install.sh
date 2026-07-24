@@ -5,6 +5,10 @@
 #   ./scripts/install.sh /path/to/project
 #   ./scripts/install.sh /path/to/project --ref v2.0.0
 #   ./scripts/install.sh /path/to/project --symlink
+#
+# Reinstall prunes skills that kstack used to ship but no longer does. Project-local
+# and plugin skills (not recorded in .agents/.kstack-skills / retired-skills.txt) are
+# left alone.
 
 set -euo pipefail
 
@@ -30,6 +34,10 @@ while [[ $# -gt 0 ]]; do
       echo "router agent for Cursor (.cursor/agents/kstack.md)."
       echo "Claude Code / Codex get skills only — no /kstack subagent; invoke"
       echo "pipeline or step skills manually (/planning-pipeline, \$review-pipeline, etc.)."
+      echo ""
+      echo "Reinstall removes skill directories that this installer previously wrote"
+      echo "(tracked in .agents/.kstack-skills) or that appear in scripts/retired-skills.txt"
+      echo "and are no longer in the current kstack skill set. Other skills are kept."
       exit 0
       ;;
     *)
@@ -52,6 +60,7 @@ fi
 TARGET="$(cd "$TARGET" && pwd)"
 SRC_SKILLS="$REPO_ROOT/.agents/skills"
 SRC_AGENT="$REPO_ROOT/.agents/agents/kstack.md"
+RETIRED_SKILLS_FILE="$REPO_ROOT/scripts/retired-skills.txt"
 
 if [[ ! -d "$SRC_SKILLS" ]]; then
   echo "ERROR: skills not found at $SRC_SKILLS" >&2
@@ -66,6 +75,7 @@ TARGET_AGENTS_SKILLS="$TARGET/.agents/skills"
 TARGET_AGENTS_AGENT_DIR="$TARGET/.agents/agents"
 TARGET_CURSOR_AGENTS="$TARGET/.cursor/agents"
 TARGET_CLAUDE_SKILLS="$TARGET/.claude/skills"
+MANIFEST="$TARGET/.agents/.kstack-skills"
 
 mkdir -p "$TARGET_AGENTS_SKILLS" "$TARGET_AGENTS_AGENT_DIR" "$TARGET_CURSOR_AGENTS"
 
@@ -115,10 +125,82 @@ link_tree() {
   done
 }
 
+list_source_skills() {
+  local skill_file
+  shopt -s nullglob
+  for skill_file in "$SRC_SKILLS"/*/SKILL.md; do
+    basename "$(dirname "$skill_file")"
+  done
+  shopt -u nullglob
+}
+
+# Candidates for removal: previously installed (manifest) ∪ known retired names.
+# Never touch skill dirs that are not in that set (project-local / plugin skills).
+collect_prune_candidates() {
+  if [[ -f "$MANIFEST" ]]; then
+    grep -vE '^\s*(#|$)' "$MANIFEST" || true
+  fi
+  if [[ -f "$RETIRED_SKILLS_FILE" ]]; then
+    grep -vE '^\s*(#|$)' "$RETIRED_SKILLS_FILE" || true
+  fi
+}
+
+is_current_skill() {
+  local name="$1"
+  local current
+  for current in $CURRENT_SKILLS; do
+    if [[ "$current" == "$name" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+prune_retired_skills() {
+  local name dest pruned=0
+
+  while IFS= read -r name; do
+    [[ -n "$name" ]] || continue
+
+    if is_current_skill "$name"; then
+      continue
+    fi
+
+    dest="$TARGET_AGENTS_SKILLS/$name"
+    # Skip missing paths and top-level symlinks (e.g. plugin skill links).
+    if [[ ! -e "$dest" ]] || [[ -L "$dest" ]]; then
+      continue
+    fi
+    if [[ ! -d "$dest" ]]; then
+      continue
+    fi
+
+    rm -rf "$dest"
+    echo "pruned $name (no longer shipped by kstack)"
+    pruned=$((pruned + 1))
+  done < <(collect_prune_candidates | sort -u)
+
+  if [[ "$pruned" -gt 0 ]]; then
+    echo "Pruned $pruned retired skill(s)."
+  fi
+}
+
+write_install_manifest() {
+  local name
+  {
+    echo "# Skills installed by kstack. Managed by scripts/install.sh — do not edit by hand."
+    for name in $CURRENT_SKILLS; do
+      echo "$name"
+    done
+  } >"$MANIFEST"
+}
+
 if [[ -n "$REF" ]]; then
   git -C "$REPO_ROOT" fetch --tags origin 2>/dev/null || true
   git -C "$REPO_ROOT" checkout "$REF"
 fi
+
+CURRENT_SKILLS="$(list_source_skills | sort)"
 
 if [[ "$USE_SYMLINK" == true ]]; then
   link_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS"
@@ -127,6 +209,9 @@ else
   copy_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS"
   cp "$SRC_AGENT" "$TARGET_AGENTS_AGENT_DIR/kstack.md"
 fi
+
+prune_retired_skills
+write_install_manifest
 
 # Cursor discovers subagents under .cursor/agents/; skills under .agents/skills.
 cp "$TARGET_AGENTS_AGENT_DIR/kstack.md" "$TARGET_CURSOR_AGENTS/kstack.md"
@@ -154,6 +239,7 @@ fi
 
 echo "Installed kstack into $TARGET/.agents/"
 echo "  Skills:  .agents/skills/  (all hosts — invoke pipeline/step skills directly)"
+echo "  Manifest:.agents/.kstack-skills (tracks installed skills for prune-on-reinstall)"
 echo "  Agent:   .agents/agents/kstack.md → .cursor/agents/kstack.md"
 echo "           (Cursor only: enables /kstack router; other hosts have no /kstack)"
 echo "  Shims:   .claude/skills → .agents/skills, .cursor/skills → .agents/skills"
