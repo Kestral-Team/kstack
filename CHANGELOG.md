@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+**Install:** Re-running `scripts/install.sh` now prunes skills that kstack no longer ships. It tracks installed
+skills in `.agents/.kstack-skills` and also removes names listed in `scripts/retired-skills.txt` (so the first
+reinstall after the narrowed skill set cleans up old copies). Project-local and plugin skill directories are not
+touched.
+
 **Docs:** `/kstack` is documented as **Cursor-only**. Claude Code, Codex, and other hosts invoke pipeline or
 step skills directly (`/planning-pipeline`, `$review-pipeline`, etc.). Skills remain multi-host under
 `.agents/skills/`; only Cursor installs the router agent at `.cursor/agents/kstack.md`.

@@ -34,6 +34,10 @@ ln -sfn ../.agents/skills /path/to/your/project/.claude/skills
 
 Then customize `context.md` files (see [Context overlay](#context-overlay) below).
 
+Re-running `install.sh` updates skills in place and **removes** skill directories that kstack used to ship but no longer
+does (tracked via `.agents/.kstack-skills` and `scripts/retired-skills.txt`). Skills you added yourself, or plugin
+skills symlinked into `.agents/skills/`, are left alone.
+
 ## Usage
 
 ### Cursor — `/kstack` router
