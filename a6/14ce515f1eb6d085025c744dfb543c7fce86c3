@@ -1,0 +1,44 @@
+scripts/test/install.test.sh
+  s_4abe458d781729::t_6d67e7c7833261 235-257
+README.md
+  s_4abe458d781729::t_efc6b7d2379259 53-54
+scripts/install.sh
+  s_4abe458d781729::t_2990a53ecdec0c 180,182-192,739
+  s_4abe458d781729::t_58d39a06df8506 590
+  s_4abe458d781729::t_a01ef8f227dd49 712-738
+  s_4abe458d781729::t_3fc3ec574aefb3 443,446,448
+  s_4abe458d781729::t_1f61c7a97a30d9 813,817,820
+  s_4abe458d781729::t_c5d582864c1cf7 536,539-540,546,553,555
+  s_4abe458d781729::t_cd7441977a1ca8 29
+  s_4abe458d781729::t_1005887aa09d6b 292-302
+  s_4abe458d781729::t_fe6a5d5ad68b43 369,375-379,383,390-391,394,403-404
+  s_4abe458d781729::t_adc4b1712cbb60 661
+  s_4abe458d781729::t_583b727887b703 634,637,643-645,648-649
+  s_4abe458d781729::t_96ca58582b6538 851-853
+  s_4abe458d781729::t_08a3986d11be8f 894,896
+  s_4abe458d781729::t_600518e5667e3f 430-431
+  s_4abe458d781729::t_3959e243b40c29 147-150,153,163-169,176-179
+  s_4abe458d781729::t_56359ef1ee303a 437
+  s_4abe458d781729::t_0dfc9752a48239 900
+  s_4abe458d781729::t_d23f8fb870c310 840-842
+  s_4abe458d781729::t_8c2a57b62cd453 198-199
+  s_4abe458d781729::t_5596c3f183f689 356,374
+  s_4abe458d781729::t_c0d7f7f2adddc4 181
+  s_4abe458d781729::t_e7273465c50c8d 740
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a614ce515f1eb6d085025c744dfb543c7fce86c3",
+  "prompts": {},
+  "sessions": {
+    "s_4abe458d781729": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "838a57f4-4a48-47fd-bb28-5a4f44666e4c",
+        "model": "grok-4.5"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
