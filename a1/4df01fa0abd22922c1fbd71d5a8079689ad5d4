@@ -1,0 +1,22 @@
+README.md
+  s_4abe458d781729::t_d63eabc22810bd 130-142,149,170,172,179,181,185
+  s_4abe458d781729::t_b9c4e0774b295e 37-39,46-48,59-63,69-70,77-78,81-85
+  s_4abe458d781729::t_edc0a03c50a92a 208
+  s_4abe458d781729::t_9150dc40831804 100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "a14df01fa0abd22922c1fbd71d5a8079689ad5d4",
+  "prompts": {},
+  "sessions": {
+    "s_4abe458d781729": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "838a57f4-4a48-47fd-bb28-5a4f44666e4c",
+        "model": "grok-4.5"
+      },
+      "human_author": "Bernard Xie <bxie94@gmail.com>"
+    }
+  }
+}
