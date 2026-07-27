@@ -1,0 +1,6 @@
+# Skills renamed in a published kstack release.
+# On reinstall, install.sh migrates authored context.md / context.*.md from
+# the old skill directory into the new one when the destination overlay is still
+# a pristine stub.
+# Format: old_name<TAB_OR_SPACE>new_name
+# Lines starting with # are ignored.

@@ -84,3 +84,6 @@ jobs:
             echo "ERROR: kstack agent missing .agents/skills references"
             exit 1
           fi
+
+      - name: Install script tests
+        run: ./scripts/test/install.test.sh

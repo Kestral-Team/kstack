@@ -2,10 +2,15 @@
 
 ## Unreleased
 
-**Install:** Re-running `scripts/install.sh` now prunes skills that kstack no longer ships. It tracks installed
-skills in `.agents/.kstack-skills` and also removes names listed in `scripts/retired-skills.txt` (so the first
-reinstall after the narrowed skill set cleans up old copies). Project-local and plugin skill directories are not
-touched.
+**Install (safe reinstall):** `scripts/install.sh` now records per-file checksums in
+`.agents/.kstack-files`. Reinstall never overwrites existing `context.md` / `context.*.md`. Other
+files upgrade when unmodified; locally edited files are kept by default with `*.kstack-new`
+sidecars and an agent-readable `.agents/.kstack-merge.md` report (`--keep` / `--overwrite` /
+TTY prompt). Retired skills still prune via `.agents/.kstack-skills` and
+`scripts/retired-skills.txt`, but authored overlays are archived under
+`.agents/.kstack-archive/` first. Renames can migrate overlays via `scripts/renamed-skills.txt`.
+New: `--uninstall [--yes]` removes managed skills/agent/shims while archiving overlays.
+Project-local and plugin skill directories remain untouched.
 
 **Docs:** `/kstack` is documented as **Cursor-only**. Claude Code, Codex, and other hosts invoke pipeline or
 step skills directly (`/planning-pipeline`, `$review-pipeline`, etc.). Skills remain multi-host under

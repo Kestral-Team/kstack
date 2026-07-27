@@ -9,6 +9,13 @@
 5. Update pipeline cross-references if the skill is part of a chain
 6. Update README skill inventory
 
+## Renaming or retiring a skill
+
+- **Rename:** add `old_name new_name` to `scripts/renamed-skills.txt` so reinstall migrates
+  authored `context.md` / `context.*.md` into the new directory before the old one is pruned.
+- **Retire:** add the old directory name to `scripts/retired-skills.txt`. Reinstall archives
+  authored overlays under `.agents/.kstack-archive/<skill>/`, then removes the skill directory.
+
 ## Cursor agent (router)
 
 `.agents/agents/kstack.md` is the source for the **Cursor-only** `/kstack` subagent. `install.sh` copies it to
@@ -45,6 +52,7 @@ PRs must pass `.github/workflows/lint.yml`:
 - Flat skill layout with folder names matching frontmatter names
 - Project Context footer on every SKILL.md
 - No internal codebase path leaks
+- `scripts/test/install.test.sh` (safe reinstall / uninstall)
 
 ## Versioning
 

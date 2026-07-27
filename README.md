@@ -34,9 +34,55 @@ ln -sfn ../.agents/skills /path/to/your/project/.claude/skills
 
 Then customize `context.md` files (see [Context overlay](#context-overlay) below).
 
-Re-running `install.sh` updates skills in place and **removes** skill directories that kstack used to ship but no longer
-does (tracked via `.agents/.kstack-skills` and `scripts/retired-skills.txt`). Skills you added yourself, or plugin
-skills symlinked into `.agents/skills/`, are left alone.
+Optional flags: `--symlink`, `--ref <tag>`, `--keep` / `--overwrite` (reinstall conflicts),
+`--uninstall [--yes]`. See [Upgrading](#upgrading) and [Uninstalling](#uninstalling).
+
+## Upgrading
+
+Re-run `install.sh` against the same project after pulling a newer kstack:
+
+```bash
+./kstack/scripts/install.sh /path/to/your/project
+# or explicitly:
+./kstack/scripts/install.sh /path/to/your/project --keep
+./kstack/scripts/install.sh /path/to/your/project --overwrite
+```
+
+Safe-reinstall behavior:
+
+- **`context.md` / `context.*.md`** — never overwritten if they already exist.
+- **Other skill files** — upgraded when unchanged since the last install (checksums in
+  `.agents/.kstack-files`). If you edited a file locally, the installer keeps your copy by
+  default, writes upstream beside it as `*.kstack-new`, and records the pair in
+  `.agents/.kstack-merge.md` for an agent-assisted merge.
+- **Conflict flags:** `--keep` (default when non-interactive), `--overwrite` (take upstream),
+  or an interactive prompt when run from a TTY (`o` / `k` / `s` / `a`). The same policy applies
+  to `.agents/agents/kstack.md` and `.cursor/agents/kstack.md`.
+- **First upgrade after this ships** — if `.agents/.kstack-files` is missing, differing files are
+  treated as unknown provenance: one aggregated keep/overwrite decision (keep + report when
+  non-interactive).
+- **Retired skills** — removed when listed in `.agents/.kstack-skills` or
+  `scripts/retired-skills.txt` and no longer shipped. Authored context overlays are moved to
+  `.agents/.kstack-archive/<skill>/` first.
+- **Renames** — overlays migrate when mapped in `scripts/renamed-skills.txt`.
+- **Your skills** — project-local or plugin-symlinked directories under `.agents/skills/` are left alone.
+- **Gitignore** — installer adds `*.kstack-new` and `.agents/.kstack-merge.md` (plus optional
+  `.kstack/`) so sidecars and the merge report stay out of commits.
+
+After a conflictful upgrade, open `.agents/.kstack-merge.md` and ask your agent to apply it.
+
+## Uninstalling
+
+```bash
+./kstack/scripts/install.sh /path/to/your/project --uninstall        # confirms on a TTY
+./kstack/scripts/install.sh /path/to/your/project --uninstall --yes  # required when non-interactive
+```
+
+Removes only manifest-tracked kstack skills, the router agent (`.agents/agents/kstack.md` and
+`.cursor/agents/kstack.md`), installer-owned shims (when they still point at `.agents/skills`),
+and installer manifests (`.agents/.kstack-skills`, `.agents/.kstack-files`). Authored
+`context.md` overlays are archived under `.agents/.kstack-archive/` (not deleted). Project-local
+skills and the archive itself are left alone — there is no `--purge`.
 
 ## Usage
 
@@ -51,7 +97,7 @@ pipeline from your intent:
 | Spike / de-risk | `/kstack spike X` → timeboxed investigation, ends with decision |
 | Implement a plan | `/kstack implement the plan` → phased build with review |
 | Pick up a task | `/kstack I'm working on KES-42` → claims task, creates branch, builds |
-| Ship / merge-ready | `/kstack ship it` → QA checklist, babysit PR, acceptance check |
+| Ship / merge-ready | `/kstack ship it` → PR babysit loop, acceptance check, merge-ready |
 | Review / polish code | `/kstack review this branch` → review, fix, simplify, deslop, docs |
 | Review a plan | `/kstack review the plan` → validates feasibility + product completeness |
 | Debug prod/local | `/kstack X is broken` → investigate, fix, capture retroactively |
@@ -81,12 +127,26 @@ For a single step without a full pipeline, invoke the step skill directly (e.g.
 
 ## Skill inventory
 
+Published skills under `.agents/skills/`. Reinstall prunes older names listed in
+`scripts/retired-skills.txt`.
+
+### Pipelines
+
+| Skill | Description |
+| ----- | ----------- |
+| `planning-pipeline` | Plan or spike, then review the plan |
+| `implementation-pipeline` | Pickup → build → optional ship |
+| `review-pipeline` | Code review polish pass |
+| `review-plan-pipeline` | Plan feasibility + product review |
+| `debug-pipeline` | Investigate, fix, capture retroactively |
+
 ### Planning
 
 | Skill | Description |
 | ----- | ----------- |
 | `write-plan` | Author structured implementation plans |
 | `plan-review` | Interactive plan validation |
+| `grill-me` | Stress-test a design until shared understanding |
 
 ### Implementation
 
@@ -95,12 +155,6 @@ For a single step without a full pipeline, invoke the step skill directly (e.g.
 | `implement-plan` | Phased plan execution with checkpoints |
 | `task-pickup` | Claim task and create branch |
 | `acceptance-check` | Validate diff against acceptance criteria |
-| `babysit-pr` | Triage comments, fix CI, resolve conflicts |
-| `manual-test-plan` | Generate QA checklist from diff |
-| `run-e2e-plan` | Run Playwright tests from plan sections |
-| `testing-patterns` | Vitest mocking reference |
-| `graphql-patterns` | Resolver, error, cache patterns |
-| `write-migration` | Database migration scaffold |
 
 ### Review
 
@@ -111,34 +165,24 @@ For a single step without a full pipeline, invoke the step skill directly (e.g.
 | `product-review` | Product completeness review |
 | `code-simplify` | Readability simplification |
 | `deslop` | Strip AI-generated slop |
-| `refactor-prompt` | Compress agent prompts |
 | `rule-evolution` | Turn findings into rules |
 | `context-evolve` | Grow project context files |
+| `documentation-update` | Sync docs with code |
 
-### Retroactive
+### Retroactive & decisions
 
 | Skill | Description |
 | ----- | ----------- |
 | `fix-issues` | Triage and fix reported issues |
-| `debugging` | Common bug patterns |
-| `debug-prod` | GCP/Sentry production debugging |
 | `pattern-check` | Cross-reference past incidents |
+| `decision-capture` | Record spike decisions |
+| `handoff-to-implementation` | Create follow-up tasks after a proceed |
 
-### Prototyping
+### Prototyping & sync
 
 | Skill | Description |
 | ----- | ----------- |
 | `single-page-mockup` | Shareable HTML mockups |
-| `decision-capture` | Record spike decisions |
-| `handoff-to-implementation` | Create follow-up tasks |
-
-### Shared
-
-| Skill | Description |
-| ----- | ----------- |
-| `documentation-update` | Sync docs with code |
-| `cleanup-plans` | Archive completed plans |
-| `evals` | Agent eval patterns |
 | `kestral-sync` | Kestral MCP task sync |
 
 ## Context overlay
@@ -161,7 +205,7 @@ Skills load generic workflow from `SKILL.md`, then read `context.md` for your pr
 **Starter templates:** `examples/context-templates/`
 
 ```bash
-./scripts/init-context.sh   # recreate empty stubs (skips filled files)
+./scripts/init-context.sh   # recreate empty stubs (skips files with more than a stub header)
 ```
 
 ## Per-host setup
