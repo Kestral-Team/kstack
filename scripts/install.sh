@@ -26,8 +26,7 @@ ASSUME_YES=false
 APPLY_ALL="" # "" | keep | overwrite
 
 CONFLICT_COUNT=0
-LEGACY_DIFF_COUNT=0
-LEGACY_MODE="" # set after aggregated legacy prompt if needed
+LEGACY_MODE=""
 KEEP_FLAG=false
 OVERWRITE_FLAG=false
 
@@ -145,13 +144,13 @@ is_context_file() {
   [[ "$name" == "context.md" || "$name" == context.*.md ]]
 }
 
-# Relative path from TARGET_AGENTS_SKILLS (or absolute key for agent file).
-rel_skills_path() {
-  local abs="$1"
-  echo "${abs#"$TARGET_AGENTS_SKILLS/"}"
+# Skill directory names only (no path separators / parent refs).
+is_safe_skill_name() {
+  local name="$1"
+  [[ "$name" =~ ^[A-Za-z0-9_][A-Za-z0-9_-]*$ ]]
 }
 
-# Bash 3.2 compatible: look up hashes via grep on FILES_MANIFEST (no assoc arrays).
+# Bash 3.2 compatible: look up hashes via line scan of FILES_MANIFEST (no assoc arrays).
 HAS_FILES_MANIFEST=false
 
 load_files_manifest() {
@@ -160,12 +159,35 @@ load_files_manifest() {
   HAS_FILES_MANIFEST=true
 }
 
-# Staging for new manifest written at end of install
 NEW_FILES_MANIFEST=""
+cleanup_install_temp() {
+  if [[ -n "${NEW_FILES_MANIFEST:-}" && -f "${NEW_FILES_MANIFEST:-}" ]]; then
+    rm -f "$NEW_FILES_MANIFEST"
+  fi
+}
+trap cleanup_install_temp EXIT
+
 init_new_files_manifest() {
   NEW_FILES_MANIFEST="$(mktemp)"
   echo "# sha256 paths relative to .agents/skills/ (or agent:kstack.md)." >"$NEW_FILES_MANIFEST"
   echo "# Managed by scripts/install.sh — do not edit by hand." >>"$NEW_FILES_MANIFEST"
+}
+
+copy_content() {
+  local src="$1"
+  local dest="$2"
+  cp -L "$src" "$dest" 2>/dev/null || cp "$src" "$dest"
+}
+
+place_file() {
+  local src="$1"
+  local dest="$2"
+  local mode="$3"
+  if [[ "$mode" == "link" ]]; then
+    ln -sf "$src" "$dest"
+  else
+    copy_content "$src" "$dest"
+  fi
 }
 
 record_file_hash() {
@@ -173,12 +195,8 @@ record_file_hash() {
   local abspath="$2"
   local hash
   if [[ -L "$abspath" ]]; then
-    # Record hash of the target content when it's a real file we can read
-    if [[ -f "$abspath" ]]; then
-      hash="$(file_sha256 "$abspath")"
-    else
-      return 0
-    fi
+    [[ -f "$abspath" ]] || return 0
+    hash="$(file_sha256 "$abspath")"
   elif [[ -f "$abspath" ]]; then
     hash="$(file_sha256 "$abspath")"
   else
@@ -271,11 +289,17 @@ init_merge_report() {
 
 local_display_path() {
   local relpath="$1"
-  if [[ "$relpath" == agent:* ]]; then
-    echo ".agents/agents/${relpath#agent:}"
-  else
-    echo ".agents/skills/$relpath"
-  fi
+  case "$relpath" in
+    cursor-agent:*)
+      echo ".cursor/agents/${relpath#cursor-agent:}"
+      ;;
+    agent:*)
+      echo ".agents/agents/${relpath#agent:}"
+      ;;
+    *)
+      echo ".agents/skills/$relpath"
+      ;;
+  esac
 }
 
 append_merge_entry() {
@@ -319,7 +343,6 @@ clear_stale_sidecar() {
   fi
 }
 
-# Decide and apply one file. Args: src_file dest_file relpath mode(copy|link)
 install_file() {
   local src="$1"
   local dest="$2"
@@ -330,11 +353,9 @@ install_file() {
 
   mkdir -p "$(dirname "$dest")"
 
-  # context.md / context.*.md: never overwrite if present
+  # Never overwrite existing context overlays; record shipped stub hash for prune detection.
   if is_context_file "$name"; then
     if [[ -e "$dest" ]]; then
-      # Record the *shipped* stub hash (previous record or current upstream), not
-      # the live dest — so prune/archive can detect authored overlays.
       local prev stub_hash
       prev="$(recorded_hash_for "$relpath")"
       if [[ -n "$prev" ]]; then
@@ -345,52 +366,32 @@ install_file() {
       fi
       return 0
     fi
-    if [[ "$mode" == "link" ]]; then
-      ln -sf "$src" "$dest"
-    else
-      cp "$src" "$dest"
-    fi
+    place_file "$src" "$dest" "$mode"
     record_file_hash "$relpath" "$dest"
     return 0
   fi
 
-  # Symlink mode: if dest is already a symlink into src, refresh and record
-  if [[ "$mode" == "link" ]]; then
-    if [[ -L "$dest" ]]; then
-      ln -sf "$src" "$dest"
-      record_file_hash "$relpath" "$dest"
-      clear_stale_sidecar "$dest"
-      return 0
-    fi
-    # Real file replaced a symlink — treat as conflict candidate below
+  # Symlink installs: refresh links; a real file at dest is a local edit → conflict path.
+  if [[ "$mode" == "link" && -L "$dest" ]]; then
+    place_file "$src" "$dest" "link"
+    record_file_hash "$relpath" "$dest"
+    clear_stale_sidecar "$dest"
+    return 0
   fi
 
   if [[ ! -e "$dest" ]]; then
-    if [[ "$mode" == "link" ]]; then
-      ln -sf "$src" "$dest"
-    else
-      cp "$src" "$dest"
-    fi
+    place_file "$src" "$dest" "$mode"
     record_file_hash "$relpath" "$dest"
     return 0
   fi
 
-  # Dest exists (regular file, or broken expectations)
   local dest_hash src_hash recorded
   src_hash="$(file_sha256 "$src")"
-  if [[ -f "$dest" ]]; then
-    dest_hash="$(file_sha256 "$dest")"
-  else
-    dest_hash=""
-  fi
+  dest_hash=""
+  [[ -f "$dest" ]] && dest_hash="$(file_sha256 "$dest")"
 
-  # Already matches upstream
   if [[ -n "$dest_hash" && "$dest_hash" == "$src_hash" ]]; then
-    if [[ "$mode" == "link" && ! -L "$dest" ]]; then
-      : # keep identical real file; or convert? keep as-is
-    elif [[ "$mode" == "link" ]]; then
-      ln -sf "$src" "$dest"
-    fi
+    [[ "$mode" == "link" && -L "$dest" ]] && place_file "$src" "$dest" "link"
     record_file_hash "$relpath" "$dest"
     clear_stale_sidecar "$dest"
     return 0
@@ -398,26 +399,19 @@ install_file() {
 
   recorded="$(recorded_hash_for "$relpath")"
 
-  # Unmodified since last install — safe to upgrade
   if [[ -n "$recorded" && -n "$dest_hash" && "$dest_hash" == "$recorded" ]]; then
-    if [[ "$mode" == "link" ]]; then
-      rm -f "$dest"
-      ln -sf "$src" "$dest"
-    else
-      cp "$src" "$dest"
-    fi
+    [[ "$mode" == "link" ]] && rm -f "$dest"
+    place_file "$src" "$dest" "$mode"
     record_file_hash "$relpath" "$dest"
     clear_stale_sidecar "$dest"
     return 0
   fi
 
-  # No recorded hash (legacy reinstall) — use aggregated LEGACY_MODE
   if [[ "$HAS_FILES_MANIFEST" != true ]]; then
     apply_conflict_action "$src" "$dest" "$relpath" "$mode" "${LEGACY_MODE:-keep}"
     return 0
   fi
 
-  # Known install + local modification
   local action
   action="$(prompt_conflict "$relpath")"
   apply_conflict_action "$src" "$dest" "$relpath" "$mode" "$action"
@@ -433,34 +427,29 @@ apply_conflict_action() {
 
   case "$action" in
     overwrite)
-      if [[ "$mode" == "link" ]]; then
-        rm -f "$dest"
-        ln -sf "$src" "$dest"
-      else
-        cp "$src" "$dest"
-      fi
+      [[ "$mode" == "link" ]] && rm -f "$dest"
+      place_file "$src" "$dest" "$mode"
       record_file_hash "$relpath" "$dest"
       clear_stale_sidecar "$dest"
       echo "overwrote $relpath (took upstream)"
       ;;
     skip)
-      # Record upstream hash so the local edit still looks modified next reinstall.
+      # Keep local; record upstream hash so the next reinstall still sees a conflict.
       upstream_hash="$(file_sha256 "$src")"
       echo "$upstream_hash $relpath" >>"$NEW_FILES_MANIFEST"
       echo "kept $relpath (no sidecar)"
       ;;
     keep | *)
-      cp "$src" "${dest}.kstack-new"
+      copy_content "$src" "${dest}.kstack-new"
       upstream_hash="$(file_sha256 "$src")"
       echo "$upstream_hash $relpath" >>"$NEW_FILES_MANIFEST"
-      append_merge_entry "$relpath" "${relpath}.kstack-new"
+      append_merge_entry "$relpath"
       CONFLICT_COUNT=$((CONFLICT_COUNT + 1))
-      echo "kept $relpath; wrote ${relpath}.kstack-new"
+      echo "kept $relpath; wrote $(local_display_path "$relpath").kstack-new"
       ;;
   esac
 }
 
-# Two-pass for legacy: scan for differing non-context files, prompt once, then install.
 collect_legacy_diffs() {
   local src_root="$1"
   local dest_root="$2"
@@ -499,7 +488,6 @@ resolve_legacy_mode() {
   if [[ "$HAS_FILES_MANIFEST" == true ]]; then
     return 0
   fi
-  # Only if target already has skills (reinstall)
   [[ -d "$TARGET_AGENTS_SKILLS" ]] || return 0
 
   local diffs
@@ -507,8 +495,6 @@ resolve_legacy_mode() {
   local count
   count="$(printf '%s\n' "$diffs" | grep -c . || true)"
   [[ "$count" -gt 0 ]] || return 0
-
-  LEGACY_DIFF_COUNT="$count"
 
   if [[ -n "$CONFLICT_MODE" ]]; then
     LEGACY_MODE="$CONFLICT_MODE"
@@ -547,53 +533,26 @@ resolve_legacy_mode() {
   done
 }
 
-copy_tree() {
+install_tree() {
   local src="$1"
   local dest="$2"
-  local rel_prefix="${3:-}"
+  local mode="$3"
+  local rel_prefix="${4:-}"
   local item name relpath
   mkdir -p "$dest"
   shopt -s nullglob
   for item in "$src"/*; do
     name="$(basename "$item")"
-    if [[ -L "$item" ]]; then
-      continue
-    fi
+    [[ -L "$item" ]] && continue
     if [[ -n "$rel_prefix" ]]; then
       relpath="$rel_prefix/$name"
     else
       relpath="$name"
     fi
     if [[ -d "$item" ]]; then
-      copy_tree "$item" "$dest/$name" "$relpath"
+      install_tree "$item" "$dest/$name" "$mode" "$relpath"
     elif [[ -f "$item" ]]; then
-      install_file "$item" "$dest/$name" "$relpath" "copy"
-    fi
-  done
-  shopt -u nullglob
-}
-
-link_tree() {
-  local src="$1"
-  local dest="$2"
-  local rel_prefix="${3:-}"
-  local item name relpath
-  mkdir -p "$dest"
-  shopt -s nullglob
-  for item in "$src"/*; do
-    name="$(basename "$item")"
-    if [[ -L "$item" ]]; then
-      continue
-    fi
-    if [[ -n "$rel_prefix" ]]; then
-      relpath="$rel_prefix/$name"
-    else
-      relpath="$name"
-    fi
-    if [[ -d "$item" ]]; then
-      link_tree "$item" "$dest/$name" "$relpath"
-    elif [[ -f "$item" ]]; then
-      install_file "$item" "$dest/$name" "$relpath" "link"
+      install_file "$item" "$dest/$name" "$relpath" "$mode"
     fi
   done
   shopt -u nullglob
@@ -628,7 +587,7 @@ is_current_skill() {
   return 1
 }
 
-# Returns 0 if context file looks authored (differs from recorded hash, or no hash and >4 lines)
+# Authored = differs from recorded stub hash; without a record, longer than the 4-line stub.
 context_is_authored() {
   local abspath="$1"
   local relpath="$2"
@@ -640,7 +599,6 @@ context_is_authored() {
     [[ "$dest_hash" != "$recorded" ]]
     return $?
   fi
-  # No record: treat as authored if longer than the empty stub (~4 lines)
   lines="$(wc -l <"$abspath" | tr -d ' ')"
   [[ "$lines" -gt 4 ]]
 }
@@ -671,38 +629,24 @@ migrate_renamed_skills() {
   local line old new old_dir new_dir f name
   while IFS= read -r line || [[ -n "$line" ]]; do
     [[ -z "$line" || "$line" == \#* ]] && continue
-    # Support tab or whitespace separator
     old="$(printf '%s\n' "$line" | awk '{print $1}')"
     new="$(printf '%s\n' "$line" | awk '{print $2}')"
-    [[ -n "$old" && -n "$new" ]] || continue
+    is_safe_skill_name "$old" && is_safe_skill_name "$new" || continue
     old_dir="$TARGET_AGENTS_SKILLS/$old"
     new_dir="$TARGET_AGENTS_SKILLS/$new"
-    [[ -d "$old_dir" && ! -L "$old_dir" ]] || continue
-    [[ -d "$new_dir" ]] || continue
+    [[ -d "$old_dir" && ! -L "$old_dir" && -d "$new_dir" ]] || continue
 
     shopt -s nullglob
     for f in "$old_dir"/context.md "$old_dir"/context.*.md; do
       [[ -f "$f" && ! -L "$f" ]] || continue
       name="$(basename "$f")"
-      if [[ -f "$new_dir/$name" ]]; then
-        # Only migrate onto pristine stub / missing authored content
-        if context_is_authored "$new_dir/$name" "$new/$name"; then
-          echo "rename migrate skip $old/$name → $new/$name (destination already authored)"
-          continue
-        fi
+      if [[ -f "$new_dir/$name" ]] && context_is_authored "$new_dir/$name" "$new/$name"; then
+        echo "rename migrate skip $old/$name → $new/$name (destination already authored)"
+        continue
       fi
       if context_is_authored "$f" "$old/$name" || [[ ! -f "$new_dir/$name" ]]; then
-        # Migrate if old looks authored, or always if new missing; for stubs copy if new is stub
-        if context_is_authored "$f" "$old/$name"; then
-          cp "$f" "$new_dir/$name"
-          echo "migrated context $old/$name → $new/$name"
-        elif [[ ! -f "$new_dir/$name" ]]; then
-          cp "$f" "$new_dir/$name"
-          echo "migrated context $old/$name → $new/$name"
-        else
-          # Old is stub and new exists as stub — nothing to do
-          :
-        fi
+        cp "$f" "$new_dir/$name"
+        echo "migrated context $old/$name → $new/$name"
       fi
     done
     shopt -u nullglob
@@ -714,6 +658,7 @@ prune_retired_skills() {
 
   while IFS= read -r name; do
     [[ -n "$name" ]] || continue
+    is_safe_skill_name "$name" || continue
 
     if is_current_skill "$name"; then
       continue
@@ -754,7 +699,6 @@ install_agent_file() {
   local relpath="agent:kstack.md"
   if [[ "$USE_SYMLINK" == true ]]; then
     if [[ -e "$dest" && ! -L "$dest" ]]; then
-      # Real file — use install_file conflict path via copy of logic
       install_file "$SRC_AGENT" "$dest" "$relpath" "copy"
     else
       ln -sf "$SRC_AGENT" "$dest"
@@ -763,6 +707,35 @@ install_agent_file() {
   else
     install_file "$SRC_AGENT" "$dest" "$relpath" "copy"
   fi
+}
+
+# Cursor discovers the router under .cursor/agents/. Keep local edits when they
+# diverge from the installed .agents/agents copy (same conflict policy as skills).
+sync_cursor_agent() {
+  local src="$TARGET_AGENTS_AGENT_DIR/kstack.md"
+  local dest="$TARGET_CURSOR_AGENTS/kstack.md"
+  local relpath="cursor-agent:kstack.md"
+  local src_hash dest_hash action
+
+  mkdir -p "$TARGET_CURSOR_AGENTS"
+  [[ -f "$src" ]] || return 0
+
+  if [[ ! -e "$dest" ]]; then
+    copy_content "$src" "$dest"
+    return 0
+  fi
+
+  src_hash="$(file_sha256 "$src")"
+  if [[ -f "$dest" ]]; then
+    dest_hash="$(file_sha256 "$dest")"
+    if [[ "$src_hash" == "$dest_hash" ]]; then
+      clear_stale_sidecar "$dest"
+      return 0
+    fi
+  fi
+
+  action="$(prompt_conflict "$relpath")"
+  apply_conflict_action "$src" "$dest" "$relpath" "copy" "$action"
 }
 
 update_gitignore() {
@@ -794,7 +767,6 @@ strip_gitignore_kstack_blocks() {
     skip==2 && /^\.agents\/\.kstack-merge\.md$/ { skip=0; next }
     { print }
   ' "$gi" >"$tmp"
-  # Collapse trailing blank lines excess
   mv "$tmp" "$gi"
 }
 
@@ -838,13 +810,14 @@ do_uninstall() {
   confirm_uninstall
   load_files_manifest
 
-  local name dest removed=0 archived_note=0
+  local name dest removed=0
   if [[ -f "$MANIFEST" ]]; then
     while IFS= read -r name; do
       [[ -z "$name" || "$name" == \#* ]] && continue
+      is_safe_skill_name "$name" || continue
       dest="$TARGET_AGENTS_SKILLS/$name"
       if [[ -d "$dest" && ! -L "$dest" ]]; then
-        archive_context_overlays "$dest" "$name" && archived_note=1
+        archive_context_overlays "$dest" "$name"
         rm -rf "$dest"
         echo "removed skill $name"
         removed=$((removed + 1))
@@ -854,7 +827,6 @@ do_uninstall() {
     echo "NOTE: no .agents/.kstack-skills manifest; not removing skill directories."
   fi
 
-  # Agent files
   rm -f "$TARGET_AGENTS_AGENT_DIR/kstack.md"
   rm -f "$TARGET_CURSOR_AGENTS/kstack.md"
   echo "removed kstack agent files"
@@ -862,24 +834,23 @@ do_uninstall() {
   remove_shim_if_ours "$TARGET_CLAUDE_SKILLS"
   remove_shim_if_ours "$TARGET_CURSOR_SKILLS"
 
-  # Sidecars and merge report under skills
   if [[ -d "$TARGET_AGENTS_SKILLS" ]]; then
     find "$TARGET_AGENTS_SKILLS" -name '*.kstack-new' -type f -delete 2>/dev/null || true
+  fi
+  if [[ -d "$TARGET_CURSOR_AGENTS" ]]; then
+    find "$TARGET_CURSOR_AGENTS" -name '*.kstack-new' -type f -delete 2>/dev/null || true
   fi
   rm -f "$MERGE_REPORT" "$FILES_MANIFEST" "$MANIFEST"
 
   strip_gitignore_kstack_blocks
 
-  # Remove empty agent/skills dirs and .agents if empty
   rmdir "$TARGET_AGENTS_AGENT_DIR" 2>/dev/null || true
   rmdir "$TARGET_AGENTS_SKILLS" 2>/dev/null || true
   rmdir "$TARGET_CURSOR_AGENTS" 2>/dev/null || true
   rmdir "$TARGET/.claude" 2>/dev/null || true
-  # Keep .agents if archive or other content remains
-  if [[ -d "$TARGET_AGENTS" ]]; then
-    if [[ -z "$(ls -A "$TARGET_AGENTS" 2>/dev/null)" ]]; then
-      rmdir "$TARGET_AGENTS"
-    fi
+  # Leave .agents/ when archive or other project content remains.
+  if [[ -d "$TARGET_AGENTS" && -z "$(ls -A "$TARGET_AGENTS" 2>/dev/null)" ]]; then
+    rmdir "$TARGET_AGENTS"
   fi
 
   echo "Uninstalled kstack from $TARGET ($removed skill dir(s) removed)."
@@ -920,21 +891,13 @@ init_merge_report
 resolve_legacy_mode
 
 if [[ "$USE_SYMLINK" == true ]]; then
-  link_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS"
+  install_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS" "link"
 else
-  copy_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS"
+  install_tree "$SRC_SKILLS" "$TARGET_AGENTS_SKILLS" "copy"
 fi
 
 install_agent_file
-
-# Cursor copy of agent — always a real copy for discovery (even in symlink mode
-# the agents dir copy for Cursor is a content copy of whatever is at agents/)
-mkdir -p "$TARGET_CURSOR_AGENTS"
-if [[ -f "$TARGET_AGENTS_AGENT_DIR/kstack.md" ]]; then
-  # If symlink, copy resolved content; if file, cp
-  cp -L "$TARGET_AGENTS_AGENT_DIR/kstack.md" "$TARGET_CURSOR_AGENTS/kstack.md" 2>/dev/null \
-    || cp "$TARGET_AGENTS_AGENT_DIR/kstack.md" "$TARGET_CURSOR_AGENTS/kstack.md"
-fi
+sync_cursor_agent
 
 migrate_renamed_skills
 prune_retired_skills
@@ -942,7 +905,6 @@ write_install_manifest
 write_files_manifest
 finalize_merge_report
 
-# Claude Code shim
 mkdir -p "$TARGET/.claude"
 if [[ -e "$TARGET_CLAUDE_SKILLS" && ! -L "$TARGET_CLAUDE_SKILLS" ]]; then
   echo "NOTE: $TARGET_CLAUDE_SKILLS already exists and is not a symlink — left unchanged."
@@ -950,7 +912,6 @@ else
   ln -sfn "../.agents/skills" "$TARGET_CLAUDE_SKILLS"
 fi
 
-# Cursor skills shim
 if [[ -e "$TARGET_CURSOR_SKILLS" && ! -L "$TARGET_CURSOR_SKILLS" ]]; then
   echo "NOTE: $TARGET_CURSOR_SKILLS already exists and is not a symlink — left unchanged."
 else

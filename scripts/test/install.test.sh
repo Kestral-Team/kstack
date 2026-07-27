@@ -3,7 +3,6 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-INSTALL="$ROOT/scripts/install.sh"
 PASS=0
 FAIL=0
 
@@ -233,7 +232,29 @@ echo "# Mine" >"$T3/.agents/skills/my-own-skill/SKILL.md"
 assert_file "local skill survives" "$T3/.agents/skills/my-own-skill/SKILL.md"
 
 # ---------------------------------------------------------------------------
-# 10. uninstall
+# 10. cursor agent local edit is kept
+# ---------------------------------------------------------------------------
+echo "-- cursor agent conflict keep"
+echo "CURSOR LOCAL EDIT" >>"$T3/.cursor/agents/kstack.md"
+echo "AGENT UPSTREAM EDIT" >>"$SRC3/.agents/agents/kstack.md"
+"$SRC3/scripts/install.sh" "$T3" --keep >/dev/null
+assert_contains "cursor agent kept" "$T3/.cursor/agents/kstack.md" "CURSOR LOCAL EDIT"
+assert_file "cursor agent sidecar" "$T3/.cursor/agents/kstack.md.kstack-new"
+
+# ---------------------------------------------------------------------------
+# 11. unsafe skill names are not pruned/removed
+# ---------------------------------------------------------------------------
+echo "-- path traversal name ignored on prune"
+mkdir -p "$T3/.agents/skills"
+# Plant a poison manifest entry; installer must not treat it as a skill dir to rm.
+printf '%s\n' '# test' '../poison' >>"$T3/.agents/.kstack-skills"
+"$SRC3/scripts/install.sh" "$T3" --keep >/dev/null
+# If traversal were honored, files outside skills could be affected; we only assert
+# the installer still completes and my-own-skill remains.
+assert_file "local skill still present after poison manifest line" "$T3/.agents/skills/my-own-skill/SKILL.md"
+
+# ---------------------------------------------------------------------------
+# 12. uninstall
 # ---------------------------------------------------------------------------
 echo "-- uninstall"
 T4="$(mktemp -d "${TMPDIR:-/tmp}/kstack-proj.XXXXXX")"

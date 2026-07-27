@@ -50,7 +50,8 @@ Safe-reinstall behavior:
   default, writes upstream beside it as `*.kstack-new`, and records the pair in
   `.agents/.kstack-merge.md` for an agent-assisted merge.
 - **Conflict flags:** `--keep` (default when non-interactive), `--overwrite` (take upstream),
-  or an interactive prompt when run from a TTY.
+  or an interactive prompt when run from a TTY. The same policy applies to
+  `.agents/agents/kstack.md` and `.cursor/agents/kstack.md`.
 - **Retired skills** — removed when listed in `.agents/.kstack-skills` or
   `scripts/retired-skills.txt` and no longer shipped. Authored context overlays are moved to
   `.agents/.kstack-archive/<skill>/` first.
