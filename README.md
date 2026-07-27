@@ -34,9 +34,41 @@ ln -sfn ../.agents/skills /path/to/your/project/.claude/skills
 
 Then customize `context.md` files (see [Context overlay](#context-overlay) below).
 
-Re-running `install.sh` updates skills in place and **removes** skill directories that kstack used to ship but no longer
-does (tracked via `.agents/.kstack-skills` and `scripts/retired-skills.txt`). Skills you added yourself, or plugin
-skills symlinked into `.agents/skills/`, are left alone.
+## Upgrading
+
+Re-run `install.sh` against the same project after pulling a newer kstack:
+
+```bash
+./kstack/scripts/install.sh /path/to/your/project
+```
+
+Safe-reinstall behavior:
+
+- **`context.md` / `context.*.md`** — never overwritten if they already exist.
+- **Other skill files** — upgraded when unchanged since the last install (checksums in
+  `.agents/.kstack-files`). If you edited a file locally, the installer keeps your copy by
+  default, writes upstream beside it as `*.kstack-new`, and records the pair in
+  `.agents/.kstack-merge.md` for an agent-assisted merge.
+- **Conflict flags:** `--keep` (default when non-interactive), `--overwrite` (take upstream),
+  or an interactive prompt when run from a TTY.
+- **Retired skills** — removed when listed in `.agents/.kstack-skills` or
+  `scripts/retired-skills.txt` and no longer shipped. Authored context overlays are moved to
+  `.agents/.kstack-archive/<skill>/` first.
+- **Renames** — overlays migrate when mapped in `scripts/renamed-skills.txt`.
+- **Your skills** — project-local or plugin-symlinked directories under `.agents/skills/` are left alone.
+
+After a conflictful upgrade, open `.agents/.kstack-merge.md` and ask your agent to apply it.
+
+## Uninstalling
+
+```bash
+./kstack/scripts/install.sh /path/to/your/project --uninstall --yes
+```
+
+Removes only manifest-tracked kstack skills, the router agent, installer-owned shims, and
+installer manifests. Authored `context.md` overlays are archived under
+`.agents/.kstack-archive/` (not deleted). Project-local skills are left alone. Without a TTY,
+`--yes` is required.
 
 ## Usage
 
