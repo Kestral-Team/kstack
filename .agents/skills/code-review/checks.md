@@ -326,6 +326,26 @@ Don't just check whether tests exist — verify they actually prove the code wor
 
 ---
 
+## UI Style Ownership and Rendered Evidence
+
+For changes to component markup, class names, or CSS/SCSS, trace each changed styling hook to a rule in a stylesheet
+loaded on every route that renders the component. A class from another component's stylesheet can look correct on one
+page and fall back to browser defaults on another page where that stylesheet is absent. Prefer a class owned by the
+rendering component or render the shared styled component itself.
+
+- ❌ JSX uses another component's BEM class without loading its stylesheet on this route
+- ✅ The component's own stylesheet defines its styling hooks, including empty and populated states
+- ✅ Inspect the actual rendered route and capture visual evidence for the affected states (including hover/focus when
+  the change depends on them). Lint, typecheck, and build success do not prove the styles loaded.
+
+If the route cannot be rendered, report visual verification as pending rather than treating a clean static review as
+proof that the UI is merge-ready.
+
+**Ask**: "When this component renders without its sibling components, are its styles still loaded, and what does the
+user actually see?"
+
+---
+
 ## Prompt–Eval Co-evolution (Evalmaxxing Risk)
 
 When the diff touches **both** agent prompts **and** eval fixtures/scorers, check for overfitting.

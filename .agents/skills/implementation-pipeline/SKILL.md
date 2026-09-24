@@ -52,8 +52,11 @@ Read `.agents/skills/review-pipeline/SKILL.md` in full and follow its workflow.
 ## Phase 3: Ship (optional)
 
 1. **Verify behavior:** If the plan has `### Phase N Manual Tests` sections, run them. If it doesn't, derive a short
-   test plan from the branch diff first, then run that. Present results (with screenshots where the runner produces
-   them) and pause for user verification. See context.md for the project's test-plan and E2E tooling.
+   test plan from the branch diff first, then run that. For rendered UI or style changes, inspect the affected route in
+   the actual app with representative data and capture screenshots of the changed states (such as empty/populated and
+   hover/focus when relevant). Present the visual evidence with the results and pause for user verification. If the
+   route cannot be rendered, report visual QA as pending instead of calling the PR merge-ready. See context.md for the
+   project's test-plan and E2E tooling.
 2. **Get the PR merge-ready:** triage review comments, fix CI failures, and resolve conflicts with the base branch,
    looping until checks are green and the PR is mergeable. See context.md for the project's PR babysitting workflow.
 3. Read `.agents/skills/acceptance-check/SKILL.md` — validate the diff against the task's acceptance criteria. Surface

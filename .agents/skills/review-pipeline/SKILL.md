@@ -23,6 +23,10 @@ Read `.agents/skills/code-review/SKILL.md` in full (including its `review-proces
 follow its workflow. Perform a one-pass AI code review of the branch diff against the diff base. Produce a complete,
 actionable review organized by logical sections.
 
+For client UI changes, include the rendered-route visual check from `code-review/checks.md` in the review verdict.
+Record which states were inspected and link or show screenshots. If the route cannot be rendered, mark visual QA pending
+and name the missing setup instead of calling the UI merge-ready.
+
 ## Step 2: Fix issues
 
 Read `.agents/skills/fix-issues/SKILL.md` in full and follow its workflow. Take the issues from the code review in Step
